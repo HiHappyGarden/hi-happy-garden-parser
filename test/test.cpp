@@ -25,17 +25,52 @@
 
 using namespace hhg::parser;
 
-struct test : public hhg::parser::object
+
+struct test1
 {
-    void test1()
+    void test_1()
     {
         std::cout << "test1" << std::endl;
     }
 };
 
+struct test2
+{
+    bool test_2(int i)
+    {
+        std::cout << "test2:" << i << std::endl;
+        return true;
+    }
+};
+
+void func1()
+{
+    std::cout << "func1:" << std::endl;
+}
+
+char func2(int a1, int a2)
+{
+    std::cout << "func2:" << (a1 + a2) << std::endl;
+    return 30;
+}
 
 TEST(foo, foo)
 {
+    test1 t1;
+    test2 t2;
+
+    method m1(&t1, &test1::test_1);
+    method m2(&t2, &test2::test_2);
+    function f1 (func1);
+    function f2 (func2);
+
+    func_reference* a1[4];
+    a1[0] = &m1;
+    a1[1] = &m2;
+    a1[2] = &f1;
+    a1[3] = &f2;
+
+
 
 }
 
@@ -43,4 +78,5 @@ TEST(foo, test)
 {
 
 }
+
 
