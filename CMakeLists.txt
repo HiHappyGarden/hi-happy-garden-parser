@@ -23,7 +23,6 @@ elseif (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.1)
     message(error "GCC too old")
 endif()
 
-
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_INCLUDES CONFIGURE_DEPENDS "inc/*.hpp" "inc/*.h")
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_TEST CONFIGURE_DEPENDS "test/*.cpp" "test/*.hpp")
@@ -41,16 +40,10 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-message(STATUS "start osal download")
-FetchContent_Declare(
-  osal
-  URL https://github.com/HiHappyGarden/osal/archive/refs/tags/0.7.0.zip
-)
-FetchContent_MakeAvailable(osal)
-include_directories(${CMAKE_BINARY_DIR}/_deps/osal-src/inc)
-include_directories(${CMAKE_BINARY_DIR}/_deps/osal-src/src/unix)
 
 include_directories(inc)
+
+add_subdirectory(osal)
 
 add_library(${PROJECT_NAME} STATIC ${HI_HAPPY_GARDEN_PARSER_SOURCES} ${HI_HAPPY_GARDEN_PARSER_INCLUDES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
