@@ -21,13 +21,56 @@
 #include <osal/osal.hpp>
 #include <stdint.h>
 
+
 namespace hhg::parser
 {
 inline namespace v1
 {
+    using namespace os;
 
-constexpr const uint8_t MAX_PARAM = 6;
+    constexpr const uint8_t KEY_MAX = 32;
+    constexpr const uint8_t TOKEN_MAX = 6;
 
+    struct entry
+    {
+        char key[KEY_MAX]{};
+
+        const entry* next = nullptr;
+        uint8_t next_size = 0;
+
+        const function_base& func;
+
+        string<32> description;
+    };
+
+    struct token
+    {
+        char* start = nullptr;
+        size_t len = 0;
+        trait_type type = trait_type::VOID;
+        bool key = false;
+    };
+
+    struct data
+    {
+        char* full_cmd = nullptr;
+
+        token tokens[TOKEN_MAX]{};
+        uint8_t tokens_len = 0;
+
+        char* ret_buffer;
+        size_t ret_buffer_max;
+    };
+    
+    class parser final
+    {
+    public:
+        parser() OS_NOEXCEPT;
+        parser(const parser&) = delete;
+        parser& operator=(const parser&) = delete;
+        parser(parser&&) = delete;
+        parser& operator=(parser&&) = delete;
+    };
 
 }
 }

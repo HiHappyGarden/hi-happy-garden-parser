@@ -42,6 +42,8 @@ FetchContent_MakeAvailable(googletest)
 
 
 include_directories(inc)
+include_directories(osal/inc)
+include_directories(osal/src/unix)
 
 add_subdirectory(osal)
 
