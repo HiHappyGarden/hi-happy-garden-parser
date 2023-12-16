@@ -56,6 +56,7 @@ enable_testing()
 add_executable("${PROJECT_NAME}_test" ${HI_HAPPY_GARDEN_PARSER_TEST})
 
 target_link_libraries("${PROJECT_NAME}_test"
+                        ${PROJECT_NAME}
                         osal
                         dl
                         GTest::gtest

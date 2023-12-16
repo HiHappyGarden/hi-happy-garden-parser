@@ -18,10 +18,22 @@
  ***************************************************************************/
 #include <gtest/gtest.h>
 
+#include <hhg-parser/parser.hpp>
+
+using namespace hhg::parser;
+
+
 
 
 TEST(foo, test)
 {
+
+    char cmd[] = "$USR \"1 ciao\"    test unica stringa staccata";
+
+    struct parser parser{nullptr, 0};
+
+    parser.execute(cmd);
+
 
 }
 

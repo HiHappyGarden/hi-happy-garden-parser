@@ -31,16 +31,20 @@ inline namespace v1
     constexpr const uint8_t KEY_MAX = 32;
     constexpr const uint8_t TOKEN_MAX = 6;
 
+    struct cmd_data;
     struct entry
     {
+        using custom_function = void(*)(struct cmd_data& data);
+
         char key[KEY_MAX]{};
 
         const entry* next = nullptr;
         uint8_t next_size = 0;
 
-        const function_base& func;
+        function_base func;
+        custom_function function = nullptr;
 
-        string<32> description;
+        string<32> description{};
     };
 
     struct token
@@ -51,25 +55,34 @@ inline namespace v1
         bool key = false;
     };
 
-    struct data
+    struct cmd_data
     {
         char* full_cmd = nullptr;
 
         token tokens[TOKEN_MAX]{};
         uint8_t tokens_len = 0;
 
-        char* ret_buffer;
-        size_t ret_buffer_max;
+        char* ret_buffer = nullptr;
+        size_t ret_buffer_size = 0;
+
+        const struct entry* entry = nullptr;
     };
     
     class parser final
     {
+        char* buffer = nullptr;
+        size_t buffer_max = 0;
     public:
-        parser() OS_NOEXCEPT;
+        parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
         parser(const parser&) = delete;
         parser& operator=(const parser&) = delete;
         parser(parser&&) = delete;
         parser& operator=(parser&&) = delete;
+
+        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_size = 0, error** error = nullptr) OS_NOEXCEPT;
+    private:
+
+        static os::exit tokenize(char* full_cmd, cmd_data& func, error** error) OS_NOEXCEPT;
     };
 
 }
