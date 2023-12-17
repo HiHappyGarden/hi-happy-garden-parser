@@ -32,6 +32,16 @@ inline namespace v1
 
     os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_size, error** error) OS_NOEXCEPT
     {
+        if(TOKEN_MAX < 4)
+        {
+            if(error)
+            {
+                *error = OS_ERROR_BUILD("TOKEN_MAX too small", error_type::OS_EINVAL);
+                OS_ERROR_PTR_SET_POSITION(*error);
+            }
+            return exit::KO;
+        }
+
         if(full_cmd == nullptr)
         {
             if(error)
@@ -58,7 +68,7 @@ inline namespace v1
         return exit::OK;
     }
 
-    os::exit parser::tokenize(char* full_cmd, cmd_data& func, error** error) OS_NOEXCEPT
+    os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT
     {
         if(full_cmd == nullptr)
         {
@@ -70,11 +80,14 @@ inline namespace v1
             return exit::KO;
         }
 
+        data.full_cmd = full_cmd;
+
         size_t len = 0;
-        uint8_t token_idx = 0;
         bool is_last_char_a_space = false;
         bool open_double_quotes = false;
-        char* cursor = full_cmd;
+        char* cursor = data.full_cmd;
+        data.tokens[0].start = cursor;
+        data.tokens_len      = 0;
         while (*cursor != '\0')
         {
             if(*cursor == ' ' && !open_double_quotes)
@@ -82,6 +95,16 @@ inline namespace v1
                 if(!is_last_char_a_space)
                 {
                     *cursor = '\0';
+                    data.tokens[data.tokens_len].len = len;
+                    len = 0;
+                    if(data.tokens_len + 1 < TOKEN_MAX)
+                    {
+                        data.tokens_len++;
+                    }
+                    else
+                    {
+                        return exit::OK;
+                    }
                 }
                 is_last_char_a_space = true;
             }
@@ -93,23 +116,30 @@ inline namespace v1
                 }
                 if(is_last_char_a_space)
                 {
-                    if(token_idx + 1 < TOKEN_MAX)
-                    {
-                        func.tokens[token_idx].start = cursor;
-                        func.tokens[token_idx].len = len;
-                        len = 0;
-                        token_idx++;
-                    }
-                    else
-                    {
-                        return exit::OK;
-                    }
+                    data.tokens[data.tokens_len].start = cursor;
                 }
                 len++;
                 is_last_char_a_space = false;
             }
             cursor++;
         }
+
+        data.tokens[data.tokens_len].len = len;
+        len = 0;
+
+        for(auto token : data.tokens)
+        {
+            if(token.len && *token.start == '"' && *(token.start + token.len - 1) == '"')
+            {
+                //token.start = &token.start[1];
+                token.start++;
+                *(token.start + token.len - 2) = '\0';
+                token.len -= 2;
+            }
+            printf("token.start: %s\n", token.start);
+            fflush(stdout);
+        }
+
 
 
         return exit::OK;

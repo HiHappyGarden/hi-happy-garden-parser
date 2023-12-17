@@ -82,7 +82,7 @@ inline namespace v1
         os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_size = 0, error** error = nullptr) OS_NOEXCEPT;
     private:
 
-        static os::exit tokenize(char* full_cmd, cmd_data& func, error** error) OS_NOEXCEPT;
+        static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
     };
 
 }
