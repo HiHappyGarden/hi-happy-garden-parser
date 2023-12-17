@@ -28,7 +28,8 @@ using namespace hhg::parser;
 TEST(foo, test)
 {
 
-    char cmd[] = "$USR \"1 ciao\"    test unica stringa staccata";
+    char cmd[] = "$USR \"{\\\"key\\\":\\\"json test\\\"}\"    test more spaced string";
+    //char cmd[] = "$USR \" questa è una bella roba  \\\"bello carico\\\"  |\"    test unica stringa staccata";
 
     struct parser parser{nullptr, 0};
 

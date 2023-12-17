@@ -84,6 +84,7 @@ inline namespace v1
 
         size_t len = 0;
         bool is_last_char_a_space = false;
+        bool is_last_char_a_backslash = false;
         bool open_double_quotes = false;
         char* cursor = data.full_cmd;
         data.tokens[0].start = cursor;
@@ -110,10 +111,13 @@ inline namespace v1
             }
             else
             {
-                if(*cursor == '"')
+                if(*cursor == '"' && !is_last_char_a_backslash)
                 {
                     open_double_quotes = !open_double_quotes;
                 }
+
+                is_last_char_a_backslash = *cursor == '\\';
+
                 if(is_last_char_a_space)
                 {
                     data.tokens[data.tokens_len].start = cursor;
