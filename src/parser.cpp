@@ -1,7 +1,7 @@
 /***************************************************************************
  *
- * Hi Happy Garden
- * Copyright (C) 202X  Antonio Salsi <passy.linux@zresa.it>
+ * Hi Happy Garden Parser
+ * Copyright (C) 2023-2024  Antonio Salsi <passy.linux@zresa.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,11 +140,7 @@ inline namespace v1
                 *(token.start + token.len - 2) = '\0';
                 token.len -= 2;
             }
-            printf("token.start: %s\n", token.start);
-            fflush(stdout);
         }
-
-
 
         return exit::OK;
     }

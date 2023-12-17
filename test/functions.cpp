@@ -16,27 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  ***************************************************************************/
-#include <gtest/gtest.h>
 
-#include <hhg-parser/parser.hpp>
+#include "functions.hpp"
 
-using namespace hhg::parser;
+#include "osal/osal.hpp"
+using namespace osal;
 
+static string name = "Mario Bros";
+static uint8_t age = 30;
 
-
-
-TEST(foo, test)
+void set_name(const char* name)
 {
-
-    //char cmd[] = "$USR \"{\\\"key\\\":\\\"json test\\\"}\"    test more spaced string";
-    //char cmd[] = "$USR \" questa è una bella roba  \\\"bello carico\\\"  |\"    test unica stringa staccata";
-    char cmd[] = "$USR \"{\\\"key\\\":\\\"json test\\\"}\"    test more spaced string";
-
-    struct parser parser{nullptr, 0};
-
-    parser.execute(cmd);
-
-
+    ::name = name;
 }
 
+const char* get_name()
+{
+    return name.c_str();
+}
 
+void set_age(uint8_t age)
+{
+    ::age = age;
+}
+
+const uint8_t get_age()
+{
+    return age;
+}
+
+const char* get_version()
+{
+    return "1.0.0";
+}

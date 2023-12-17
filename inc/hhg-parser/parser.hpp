@@ -1,7 +1,7 @@
 /***************************************************************************
  *
- * Hi Happy Garden
- * Copyright (C) 2024 Antonio Salsi <passy.linux@zresa.it>
+ * Hi Happy Garden Parser
+ * Copyright (C) 2023-2024  Antonio Salsi <passy.linux@zresa.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ inline namespace v1
         function_base func;
         custom_function function = nullptr;
 
-        string<32> description{};
+        char const description[128]{};
     };
 
     struct token
@@ -70,8 +70,8 @@ inline namespace v1
     
     class parser final
     {
-        char* buffer = nullptr;
-        size_t buffer_max = 0;
+        entry* entries_table = nullptr;
+        size_t entries_table_size = 0;
     public:
         parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
         parser(const parser&) = delete;

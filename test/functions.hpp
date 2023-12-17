@@ -1,7 +1,7 @@
 /***************************************************************************
  *
- * PROJECT
- * Copyright (C) 202X  Antonio Salsi <passy.linux@zresa.it>
+ * Hi Happy Garden Parser
+ * Copyright (C) 2023-2024  Antonio Salsi <passy.linux@zresa.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,3 +17,13 @@
  *
  ***************************************************************************/
 
+#pragma once
+
+#include <stdint.h>
+
+void set_name(const char* name);
+const char* get_name();
+void set_age(uint8_t age);
+const uint8_t get_age();
+
+const char* get_version();
