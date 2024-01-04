@@ -26,11 +26,13 @@ inline namespace v1
 {
 
     parser::parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT
+    : entries_table(entries_table)
+    , entries_table_size(entries_table_size)
     {
 
     }
 
-    os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_size, error** error) OS_NOEXCEPT
+    os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) OS_NOEXCEPT
     {
         if(TOKEN_MAX < 4)
         {
@@ -52,11 +54,11 @@ inline namespace v1
             return exit::KO;
         }
 
-        struct cmd_data data;
+        cmd_data data;
         if(ret_value)
         {
             data.ret_buffer = ret_value;
-            data.ret_buffer_size = ret_value_size;
+            data.ret_buffer_len = ret_value_len;
         }
 
         if(tokenize(full_cmd, data, error) == exit::KO)
@@ -65,7 +67,7 @@ inline namespace v1
         }
 
 
-        return exit::OK;
+        return execute(data, entries_table, entries_table_size, error);
     }
 
     os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT
@@ -143,6 +145,88 @@ inline namespace v1
         }
 
         return exit::OK;
+    }
+
+    os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT
+    {
+        if(entry == nullptr)
+        {
+            if(error)
+            {
+                *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+                OS_ERROR_PTR_SET_POSITION(*error);
+            }
+            return exit::KO;
+        }
+
+        uint8_t args_count = entry->func.get_args_count();
+        if(args_count)
+        {
+            uint8_t args_i = 0;
+            for(auto&& [start, len, type, key] : data.tokens)
+            {
+                if(key)
+                {
+                    continue;
+                }
+                if(args_i < args_count)
+                {
+                    type = entry->func.get_args_type()[args_i];
+                }
+                else
+                {
+                    break;
+                }
+                args_i++;
+            }
+        }
+
+        return exit::OK;
+    }
+
+    os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT
+    {
+        if(entries == nullptr || entries_size == 0)
+        {
+            if(error)
+            {
+                *error = OS_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
+                OS_ERROR_PTR_SET_POSITION(*error);
+            }
+            return exit::KO;
+        }
+
+        token* key = nullptr;
+        for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
+        {
+            key = data.tokens + i;
+            if(!key->key)
+            {
+                break;
+            }
+        }
+
+        for(size_t i = 0; i < entries_size; i++)
+        {
+            const entry* cursor = entries + i;
+            if(strncmp(key->start, cursor->key, sizeof(cursor->key)) == 0)
+            {
+                key->key = true;
+                if(cursor->next == nullptr)
+                {
+                    if(typify(cursor, data, error) == exit::KO)
+                    {
+                        return exit::KO;
+                    }
+                }
+                else
+                {
+                    return parser::execute(data, cursor->next, cursor->next_size,  error);
+                }
+            }
+        }
+
+        return exit::KO;
     }
 }
 }

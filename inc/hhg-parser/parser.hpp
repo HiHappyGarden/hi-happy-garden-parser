@@ -63,7 +63,7 @@ inline namespace v1
         uint8_t tokens_len = 0;
 
         char* ret_buffer = nullptr;
-        size_t ret_buffer_size = 0;
+        size_t ret_buffer_len = 0;
 
         const struct entry* entry = nullptr;
     };
@@ -79,10 +79,14 @@ inline namespace v1
         parser(parser&&) = delete;
         parser& operator=(parser&&) = delete;
 
-        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_size = 0, error** error = nullptr) OS_NOEXCEPT;
+        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, error** error = nullptr) OS_NOEXCEPT;
     private:
 
         static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
+        static os::exit typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT;
+
+        os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, error** error = nullptr) OS_NOEXCEPT;
+
     };
 
 }

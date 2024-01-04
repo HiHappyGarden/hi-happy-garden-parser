@@ -22,17 +22,13 @@
 
 using namespace hhg::parser;
 
+extern hhg::parser::entry* get_table_commands();
+extern size_t get_table_size_commands();
 
-
-
-TEST(foo, test)
+TEST(foo, test_int)
 {
-
-    //char cmd[] = "$USR \"{\\\"key\\\":\\\"json test\\\"}\"    test more spaced string";
-    //char cmd[] = "$USR \" questa è una bella roba  \\\"bello carico\\\"  |\"    test unica stringa staccata";
-    char cmd[] = "$USR \"{\\\"key\\\":\\\"json test\\\"}\"    test more spaced string";
-
-    struct parser parser{nullptr, 0};
+    char cmd[] = "^USR 1 12";
+    struct parser parser{get_table_commands(), get_table_size_commands()};
 
     parser.execute(cmd);
 

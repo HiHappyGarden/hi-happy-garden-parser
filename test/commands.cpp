@@ -22,23 +22,45 @@
 
 namespace
 {
+    struct test_t
+    {
+        uint32_t i  = 23;
+        uint32_t get_i()
+        {
+            return i;
+        }
+    };
 
-    const hhg::parser::entry commands_user[] =
+
+    test_t test;
+
+    hhg::parser::entry commands_user[] =
     {
 
-         {.key = "1", .func = hhg::parser::function{set_age, hhg::parser::trait_type::VOID, hhg::parser::trait_type::UINT8}, .description = "Set User Age"},
+         {.key = "1", .func = hhg::parser::function{set_age, hhg::parser::trait_type::_VOID_, hhg::parser::trait_type::UINT8}, .description = "Set User Age"},
          {.key = "2", .func = hhg::parser::function{get_age, hhg::parser::trait_type::UINT8}, .description = "Get User Age"},
-         {.key = "3", .func = hhg::parser::function{set_name, hhg::parser::trait_type::VOID, hhg::parser::trait_type::STR}, .description = "Set User Name"},
+         {.key = "3", .func = hhg::parser::function{set_name, hhg::parser::trait_type::_VOID_, hhg::parser::trait_type::STR}, .description = "Set User Name"},
          {.key = "4", .func = hhg::parser::function{get_name, hhg::parser::trait_type::STR}, .description = "Set User Name"}
     };
     constexpr const size_t commands_user_size = sizeof(commands_user) / sizeof(commands_user[0]);
 
-    const hhg::parser::entry commands[] =
+    hhg::parser::entry commands[] =
     {
 
-            {.key = "$VER", .func = hhg::parser::function{get_version, hhg::parser::trait_type::VOID}, .description = "Get App version"},
-            {.key = "$USR", .next = commands_user, .next_size = commands_user_size}
+            {.key = "^VER", .func = hhg::parser::function{get_version, hhg::parser::trait_type::_VOID_}, .description = "Get App version"},
+            {.key = "^TEST", .func = hhg::parser::method{&test, &test_t::get_i, hhg::parser::trait_type::UINT32}, .description = "Get App version"},
+            {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
     };
-constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);
+    constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);
 
+}
+
+hhg::parser::entry* get_table_commands()
+{
+    return commands;
+}
+
+size_t get_table_size_commands()
+{
+    return commands_size;
 }
