@@ -51,7 +51,7 @@ inline namespace v1
     {
         char* start = nullptr;
         size_t len = 0;
-        trait_type type = trait_type::VOID;
+        trait_type type = trait_type::_VOID_;
         bool key = false;
     };
 
