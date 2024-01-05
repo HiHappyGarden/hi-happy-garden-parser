@@ -42,7 +42,7 @@ inline namespace v1
         const entry* next = nullptr;
         uint8_t next_size = 0;
 
-        function_base func;
+        function_base::ptr func;
         custom_function custom_func = nullptr;
 
         char const description[128]{};

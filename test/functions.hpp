@@ -24,6 +24,6 @@
 void set_name(const char* name);
 const char* get_name();
 void set_age(uint8_t age);
-const uint8_t get_age();
+uint8_t get_age();
 
 const char* get_version();

@@ -215,13 +215,13 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         return entry->custom_func(entry, data, error);
     }
 
-    switch (entry->func.get_args_count())
+    switch (entry->func->get_args_count())
     {
         case 0:
         {
-            if(entry->func.get_ret_type() == trait_type::_VOID_)
+            if(entry->func->get_ret_type() == trait_type::_VOID_)
             {
-                if(entry->func.get_type() == function_base::FUNCTION)
+                if(entry->func->get_type() == function_base::FUNCTION)
                 {
 
                 }
@@ -230,13 +230,19 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         }
         case 1:
         {
-            switch (entry->func.get_ret_type())
+            switch (entry->func->get_ret_type())
             {
                 case trait_type::_VOID_:
-                    if(entry->func.get_type() == function_base::FUNCTION)
+                {
+                    if(entry->func->get_type() == function_base::FUNCTION)
                     {
-                        //const function<void, uint8_t>&& f =   entry->func;
-                        auto f = (const function<void, uint8_t>*)(&entry->func);
+                        param p0;
+                        if(valorize_param(data.tokens[2] , p0, error) == exit::KO)
+                        {
+                            return exit::KO;
+                        }
+
+                        auto f = (const function<void, uint8_t>*)(entry->func.get());
                         f->get_function().function_a0(1);
 
                     }
@@ -245,6 +251,7 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
 
                     }
                     break;
+                }
                 case trait_type::CHAR:
                     break;
                 case trait_type::BOOL:
@@ -293,31 +300,6 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
 
     return exit::KO;
 }
-
-//os::exit parser::perform(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT
-//{
-//    if(entry == nullptr)
-//    {
-//        if(error)
-//        {
-//            *error = OS_ERROR_BUILD("Null entry.", error_type::OS_EINVAL);
-//            OS_ERROR_PTR_SET_POSITION(*error);
-//        }
-//        return exit::KO;
-//    }
-//
-//    if(entry->func.get_type() == function_base::FUNCTION)
-//    {
-//
-//
-//    }
-//    else
-//    {
-//
-//    }
-//
-//    return exit::KO;
-//}
 
 os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT
 {
@@ -408,7 +390,7 @@ os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NO
         return exit::KO;
     }
 
-    uint8_t args_count = entry->func.get_args_count();
+    uint8_t args_count = entry->func->get_args_count();
     if(args_count)
     {
         uint8_t args_i = 0;
@@ -420,7 +402,7 @@ os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NO
             }
             if(args_i < args_count)
             {
-                type = entry->func.get_args_type()[args_i];
+                type = entry->func->get_args_type()[args_i];
             }
             else
             {
@@ -528,7 +510,7 @@ os::exit parser::valorize_param(const token& token, param& param, error** error)
             param.type = trait_type::_VOID_;
             return exit::OK;
     }
-    return exit::KO;
+    return exit::OK;
 }
 
 }
