@@ -14,7 +14,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 add_compile_options("$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-fno-rtti>")
 add_compile_options("$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-fexceptions>")
-add_compile_options(-fno-rtti -fno-exceptions)
 
 if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
   set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")

@@ -31,11 +31,10 @@ inline namespace v1
     constexpr const uint8_t KEY_MAX = 32;
     constexpr const uint8_t TOKEN_MAX = 6;
 
-    struct param;
     struct cmd_data;
     struct entry
     {
-        using custom_function = os::exit (*)(const entry* entry, const cmd_data& data, error** error);
+        using custom_function = void(*)(struct cmd_data& data);
 
         char key[KEY_MAX]{};
 
@@ -43,7 +42,7 @@ inline namespace v1
         uint8_t next_size = 0;
 
         function_base func;
-        custom_function custom_func = nullptr;
+        custom_function function = nullptr;
 
         char const description[128]{};
     };
@@ -68,7 +67,7 @@ inline namespace v1
 
         const struct entry* entry = nullptr;
     };
-
+    
     class parser final
     {
         entry* entries_table = nullptr;
@@ -80,16 +79,13 @@ inline namespace v1
         parser(parser&&) = delete;
         parser& operator=(parser&&) = delete;
 
-        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, error** error = nullptr) const OS_NOEXCEPT;
+        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, error** error = nullptr) OS_NOEXCEPT;
     private:
-        static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT;
-        static os::exit execute(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT;
-//        static os::exit perform(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT;
 
         static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
         static os::exit typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT;
-        static os::exit valorize_param(const token& token, param& param, error** error) OS_NOEXCEPT;
 
+        os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, error** error = nullptr) OS_NOEXCEPT;
 
     };
 
