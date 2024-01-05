@@ -93,23 +93,83 @@ inline namespace v1
         data.tokens_len      = 0;
         while (*cursor != '\0')
         {
-            if(*cursor == ' ' && !open_double_quotes)
+            *error = OS_ERROR_BUILD("Null entry.", error_type::OS_EINVAL);
+            OS_ERROR_PTR_SET_POSITION(*error);
+        }
+        return exit::KO;
+    }
+
+    if(entry->custom_func)
+    {
+        return entry->custom_func(entry, data, error);
+    }
+
+    switch (entry->func->get_args_count())
+    {
+        case 0:
+        {
+            if(entry->func->get_ret_type() == trait_type::_VOID_)
             {
-                if(!is_last_char_a_space)
+                if(entry->func->get_type() == function_base::FUNCTION)
                 {
-                    *cursor = '\0';
-                    data.tokens[data.tokens_len].len = len;
-                    len = 0;
-                    if(data.tokens_len + 1 < TOKEN_MAX)
+
+                }
+            }
+            break;
+        }
+        case 1:
+        {
+            switch (entry->func->get_ret_type())
+            {
+                case trait_type::_VOID_:
+                {
+                    if(entry->func->get_type() == function_base::FUNCTION)
                     {
-                        data.tokens_len++;
+                        param p0;
+                        if(valorize_param(data.tokens[2] , p0, error) == exit::KO)
+                        {
+                            return exit::KO;
+                        }
+
+                        auto f = (const function<void, uint8_t>*)(entry->func.get());
+                        f->get_function().function_a0(1);
+
                     }
                     else
                     {
                         return exit::OK;
                     }
+                    break;
                 }
-                is_last_char_a_space = true;
+                case trait_type::CHAR:
+                    break;
+                case trait_type::BOOL:
+                    break;
+                case trait_type::STRING:
+                case trait_type::STR:
+                    break;
+                case trait_type::INT8:
+                    break;
+                case trait_type::UINT8:
+                    break;
+                case trait_type::INT16:
+                    break;
+                case trait_type::UINT16:
+                    break;
+                case trait_type::INT32:
+                    break;
+                case trait_type::UINT32:
+                    break;
+                case trait_type::INT64:
+                    break;
+                case trait_type::UINT64:
+                    break;
+                case trait_type::FLOAT:
+                    break;
+                case trait_type::DOUBLE:
+                    break;
+                default:
+                    return exit::OK;
             }
             else
             {
@@ -147,7 +207,9 @@ inline namespace v1
         return exit::OK;
     }
 
-    os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT
+os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT
+{
+    if(full_cmd == nullptr)
     {
         if(entry == nullptr)
         {
@@ -199,8 +261,27 @@ inline namespace v1
         token* key = nullptr;
         for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
         {
-            key = data.tokens + i;
-            if(!key->key)
+            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OS_ERROR_PTR_SET_POSITION(*error);
+        }
+        return exit::KO;
+    }
+
+    uint8_t args_count = entry->func->get_args_count();
+    if(args_count)
+    {
+        uint8_t args_i = 0;
+        for(auto&& [start, len, type, key] : data.tokens)
+        {
+            if(key)
+            {
+                continue;
+            }
+            if(args_i < args_count)
+            {
+                type = entry->func->get_args_type()[args_i];
+            }
+            else
             {
                 break;
             }
@@ -228,6 +309,7 @@ inline namespace v1
 
         return exit::KO;
     }
+    return exit::OK;
 }
 }
 

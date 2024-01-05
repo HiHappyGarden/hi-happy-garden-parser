@@ -40,7 +40,7 @@ void set_age(uint8_t age)
     ::age = age;
 }
 
-const uint8_t get_age()
+uint8_t get_age()
 {
     return age;
 }
