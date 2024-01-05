@@ -20,88 +20,83 @@
 #include "hhg-parser/parser.hpp"
 using namespace os;
 
-#define CAST_FROM_STR_TO_INT(func, param, type, error_msg) \
-            param = static_cast<type>(func(token.start, &end_ptr, 10));\
-            if (end_ptr <= token.start)\
-            {\
-            if(error)\
-            {\
-                *error = OS_ERROR_BUILD(error_msg, error_type::OS_CASTERR);\
-                OS_ERROR_PTR_SET_POSITION(*error);\
-            }\
-                return exit::KO;\
-            }
+#define HHG_PARSER_3_PARAM(enum_0, type_0, func_0, enum_1, type_1, func_1, enum_2, type_2, fun_2) \
+auto args = entry->func->get_args_type(); \
+if (args[0] == enum_0 && args[1] == enum_1 && args[2] == enum_2) \
+{ \
+                                                                                                  \
+}
+
 
 namespace hhg::parser
 {
 inline namespace v1
 {
 
-struct param
-{
-    union
-    {
-        char param_char;
-        bool param_bool;
-        char* param_str;
-        int8_t param_int8;
-        uint8_t param_uint8;
-        int16_t param_int16;
-        uint16_t param_uint16;
-        int32_t param_int32;
-        uint32_t param_uint32;
-        int64_t param_int64;
-        uint64_t param_uint64;
-        float param_float;
-        double param_double;
-    };
-    trait_type type = trait_type::_VOID_;
-};
-
-
 namespace
 {
-
-template<typename T>
-constexpr T conversion_param(const param& param)
-{
-    T t;
-
-    switch (param.type)
+    os::exit pippo(const entry* entry, const cmd_data& data)
     {
-        case trait_type::CHAR:
-            t = param.param_char;
-        case trait_type::BOOL:
-            t = param.param_bool;
-        case trait_type::STRING:
-        case trait_type::STR:
-            t = param.param_str;
-        case trait_type::INT8:
-            t = param.param_int8;
-        case trait_type::UINT8:
-            t = param.param_uint8;
-        case trait_type::INT16:
-            t = param.param_int16;
-        case trait_type::UINT16:
-            t = param.param_uint16;
-        case trait_type::INT32:
-            t = param.param_int32;
-        case trait_type::UINT32:
-            t = param.param_uint32;
-        case trait_type::INT64:
-            t = param.param_int64;
-        case trait_type::UINT64:
-            t = param.param_uint64;
-        case trait_type::FLOAT:
-            t = param.param_float;
-        case trait_type::DOUBLE:
-            t = param.param_double;
-        default:
-            return exit::OK;
-    }
+        auto args = entry->func->get_args_type();
+        if(args[0] == trait_type::UINT8 )
+        {
+            auto f = (const function<void, uint8_t>*)(entry->func.get());
+            f->get_function().function_a0(1);
+            if(entry->func->get_type() == osal::function_base::FUNCTION)
+            {
+                switch (entry->func->get_ret_type()) //function
+                {
+                    case trait_type::_VOID_:
+                    {
+                        auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get());
+                        f->get_function().function_a0(1);
+                        break;
+                    }
+                    case trait_type::CHAR:
+                    {
+                        break;
+                    }
+                    case trait_type::STRING:
+                    case trait_type::STR:
+                    {
+                        break;
+                    }
+                    case trait_type::BOOL:
+                    case trait_type::INT8:
+                    case trait_type::UINT8:
+                    case trait_type::INT16:
+                    case trait_type::UINT16:
+                    case trait_type::INT32:
+                    case trait_type::UINT32:
+                    {
+                        break;
+                    }
+                    case trait_type::INT64:
+                    case trait_type::UINT64:
+                    {
+                        break;
+                    }
+                    case trait_type::FLOAT:
+                    {
+                        break;
+                    }
+                    case trait_type::DOUBLE:
+                    {
+                        break;
+                    }
+                    default:
+                        return exit::KO;
+                }
+            }
+            else
+            {
 
-    return t;
-}
+            }
+        }
+
+
+        return exit::KO;
+    }
 
 }
 
@@ -215,72 +210,72 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         return entry->custom_func(entry, data, error);
     }
 
+    size_t param_i = 0;
+    for(; param_i < data.tokens_len && param_i < TOKEN_MAX; param_i++)
+    {
+        if(!data.tokens[param_i].key)
+        {
+            break;
+        }
+    }
+
     switch (entry->func->get_args_count())
     {
         case 0:
         {
-            if(entry->func->get_ret_type() == trait_type::_VOID_)
-            {
-                if(entry->func->get_type() == function_base::FUNCTION)
-                {
 
-                }
-            }
             break;
         }
         case 1:
         {
-            switch (entry->func->get_ret_type())
+            if(entry->func->get_type() == function_base::FUNCTION)
             {
-                case trait_type::_VOID_:
+                //function
+                switch (entry->func->get_ret_type())
                 {
-                    if(entry->func->get_type() == function_base::FUNCTION)
+                    case trait_type::_VOID_:
                     {
-                        param p0;
-                        if(valorize_param(data.tokens[2] , p0, error) == exit::KO)
-                        {
-                            return exit::KO;
-                        }
-
-                        auto f = (const function<void, uint8_t>*)(entry->func.get());
+                        auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get());
                         f->get_function().function_a0(1);
-
                     }
-                    else
-                    {
 
-                    }
-                    break;
+
+                        break;
+                    case trait_type::CHAR:
+
+                        break;
+                    case trait_type::STRING:
+                    case trait_type::STR:
+
+                        break;
+                    case trait_type::BOOL:
+                    case trait_type::INT8:
+                    case trait_type::UINT8:
+                    case trait_type::INT16:
+                    case trait_type::UINT16:
+                    case trait_type::INT32:
+                    case trait_type::UINT32:
+
+                        break;
+                    case trait_type::INT64:
+                    case trait_type::UINT64:
+
+                        break;
+                    case trait_type::FLOAT:
+
+                        break;
+                    case trait_type::DOUBLE:
+
+                        break;
+                    default:
+                        return exit::KO;
                 }
-                case trait_type::CHAR:
-                    break;
-                case trait_type::BOOL:
-                    break;
-                case trait_type::STRING:
-                case trait_type::STR:
-                    break;
-                case trait_type::INT8:
-                    break;
-                case trait_type::UINT8:
-                    break;
-                case trait_type::INT16:
-                    break;
-                case trait_type::UINT16:
-                    break;
-                case trait_type::INT32:
-                    break;
-                case trait_type::UINT32:
-                    break;
-                case trait_type::INT64:
-                    break;
-                case trait_type::UINT64:
-                    break;
-                case trait_type::FLOAT:
-                    break;
-                case trait_type::DOUBLE:
-                    break;
-                default:
-                    return exit::OK;
+            }
+            else
+            {
+                //method
+
+
             }
             break;
         }
@@ -415,102 +410,66 @@ os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NO
     return exit::OK;
 }
 
-os::exit parser::valorize_param(const token& token, param& param, error** error) OS_NOEXCEPT
+char parser::handle_param_char(const token& token, error** error) OS_NOEXCEPT
 {
-    char* end_ptr = nullptr;
-    param.type = token.type;
-    switch (token.type)
-    {
-        case trait_type::_VOID_:
-            break;
-        case trait_type::CHAR:
-            if(token.len > 0)
-            {
-                param.param_char = token.start[0];
-            }
-            else
-            {
-                if(error)
-                {
-                    *error = OS_ERROR_BUILD("No data for convert in char.", error_type::OS_CASTERR);
-                    OS_ERROR_PTR_SET_POSITION(*error);
-                }
-                return exit::KO;
-            }
-            break;
-        case trait_type::BOOL:
-            if(token.len > 0)
-            {
-                param.param_bool = token.start[0] != 0;
-                return exit::OK;
-            }
-            else
-            {
-                if(error)
-                {
-                    *error = OS_ERROR_BUILD("No data for convert in bool.", error_type::OS_CASTERR);
-                    OS_ERROR_PTR_SET_POSITION(*error);
-                }
-                return exit::KO;
-            }
-            break;
-        case trait_type::STRING:
-        case trait_type::STR:
-            param.param_str = token.start;
-            break;
-        case trait_type::INT8:
-            CAST_FROM_STR_TO_INT(strtol, param.param_int8, int8_t, "Invalid conversion in int8.")
-            break;
-        case trait_type::UINT8:
-            CAST_FROM_STR_TO_INT(strtol, param.param_uint8, uint8_t, "Invalid conversion in uint8.")
-            break;
-        case trait_type::INT16:
-            CAST_FROM_STR_TO_INT(strtol, param.param_int16, int16_t, "Invalid conversion in int16.")
-            break;
-        case trait_type::UINT16:
-            CAST_FROM_STR_TO_INT(strtol, param.param_uint16, uint16_t, "Invalid conversion in uint16.")
-            break;
-        case trait_type::INT32:
-            CAST_FROM_STR_TO_INT(strtol, param.param_int32, int32_t, "Invalid conversion in int32.")
-            break;
-        case trait_type::UINT32:
-            CAST_FROM_STR_TO_INT(strtol, param.param_uint32, uint32_t, "Invalid conversion in uint32.")
-            break;
-        case trait_type::INT64:
-            CAST_FROM_STR_TO_INT(strtoll, param.param_int64, int64_t, "Invalid conversion in int64.")
-            break;
-        case trait_type::UINT64:
-            CAST_FROM_STR_TO_INT(strtoll, param.param_uint64, uint64_t, "Invalid conversion in uint64.")
-            break;
-        case trait_type::FLOAT:
-            param.param_float = strtof(token.start, &end_ptr);
-            if (end_ptr <= token.start)
-            {
-                if(error)
-                {
-                    *error = OS_ERROR_BUILD("Invalid conversion in float.", error_type::OS_CASTERR);
-                    OS_ERROR_PTR_SET_POSITION(*error);\
-                }
-                return exit::KO;
-            }
-            break;
-        case trait_type::DOUBLE:
-            param.param_double = strtod(token.start, &end_ptr);
-            if (end_ptr <= token.start)
-            {
-                if(error)
-                {
-                    *error = OS_ERROR_BUILD("Invalid conversion in double.", error_type::OS_CASTERR);
-                    OS_ERROR_PTR_SET_POSITION(*error);\
-                }
-                return exit::KO;
-            }
-            break;
-        default:
-            param.type = trait_type::_VOID_;
-            return exit::OK;
-    }
-    return exit::OK;
+
+    return 1;
+}
+
+char* parser::handle_param_str(const token& token, error** error) OS_NOEXCEPT
+{
+    return nullptr;
+}
+
+int32_t parser::handle_param_int(const token& token, error** error) OS_NOEXCEPT
+{
+    return 1;
+}
+
+uint64_t parser::handle_param_long(const token& token, error** error) OS_NOEXCEPT
+{
+    return 1;
+}
+
+float parser::handle_param_float(const token& token, error** error) OS_NOEXCEPT
+{
+    return 1;
+}
+
+double parser::handle_param_double(const token& token, error** error) OS_NOEXCEPT
+{
+    return 1;
+}
+
+
+inline void parser::handle_ret_char(cmd_data& data, char c) OS_NOEXCEPT
+{
+    snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_CHAR, c);
+}
+
+inline void parser::handle_ret_str(cmd_data& data, const char* str) OS_NOEXCEPT
+{
+    strncpy(data.ret_buffer, str, data.ret_buffer_len);
+}
+
+inline void parser::handle_ret_int(cmd_data& data, int32_t i) OS_NOEXCEPT
+{
+    snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, i);
+}
+
+inline void parser::handle_ret_long(cmd_data& data, uint64_t i) OS_NOEXCEPT
+{
+    snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_LONG, i);
+}
+
+inline void parser::handle_ret_float(cmd_data& data, float f) OS_NOEXCEPT
+{
+    snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_FLOAT, f);
+}
+
+inline void parser::handle_ret_double(cmd_data& data, double d) OS_NOEXCEPT
+{
+    snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_DOUBLE, d);
 }
 
 }

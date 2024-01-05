@@ -22,6 +22,26 @@
 #include <stdint.h>
 
 
+#ifndef HHG_PARSER_FORMAT_CHAR
+    #define HHG_PARSER_FORMAT_CHAR "%c"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_INT
+    #define HHG_PARSER_FORMAT_INT "%d"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_LONG
+    #define HHG_PARSER_FORMAT_LONG "%ld"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_FLOAT
+    #define HHG_PARSER_FORMAT_FLOAT "%f"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_DOUBLE
+    #define HHG_PARSER_FORMAT_DOUBLE "%lf"
+#endif
+
 namespace hhg::parser
 {
 inline namespace v1
@@ -84,11 +104,23 @@ inline namespace v1
     private:
         static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT;
         static os::exit execute(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT;
-//        static os::exit perform(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT;
 
         static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
         static os::exit typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT;
-        static os::exit valorize_param(const token& token, param& param, error** error) OS_NOEXCEPT;
+
+        static char handle_param_char(const token& token, error** error) OS_NOEXCEPT;
+        static char* handle_param_str(const token& token, error** error) OS_NOEXCEPT;
+        static int32_t handle_param_int(const token& token, error** error) OS_NOEXCEPT;
+        static uint64_t handle_param_long(const token& token, error** error) OS_NOEXCEPT;
+        static float handle_param_float(const token& token, error** error) OS_NOEXCEPT;
+        static double handle_param_double(const token& token, error** error) OS_NOEXCEPT;
+
+        static void handle_ret_char(cmd_data& data, char c) OS_NOEXCEPT;
+        static void handle_ret_str(cmd_data& data, const char* str) OS_NOEXCEPT;
+        static void handle_ret_int(cmd_data& data, int32_t i) OS_NOEXCEPT;
+        static void handle_ret_long(cmd_data& data, uint64_t i) OS_NOEXCEPT;
+        static void handle_ret_float(cmd_data& data, float f) OS_NOEXCEPT;
+        static void handle_ret_double(cmd_data& data, double d) OS_NOEXCEPT;
 
 
     };
