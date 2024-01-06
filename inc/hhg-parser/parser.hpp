@@ -93,6 +93,8 @@ inline namespace v1
     {
         entry* entries_table = nullptr;
         size_t entries_table_size = 0;
+
+        friend os::exit pippo(array<trait_type, function_base::MAX_PARAM> params_types,  size_t param_i, cmd_data& data, const entry* entry, error** error);
     public:
         parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
         parser(const parser&) = delete;

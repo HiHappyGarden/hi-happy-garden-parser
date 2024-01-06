@@ -20,12 +20,42 @@
 #include "hhg-parser/parser.hpp"
 using namespace os;
 
-#define HHG_PARSER_3_PARAM(enum_0, type_0, func_0, enum_1, type_1, func_1, enum_2, type_2, fun_2) \
-auto args = entry->func->get_args_type(); \
-if (args[0] == enum_0 && args[1] == enum_1 && args[2] == enum_2) \
-{ \
-                                                                                                  \
-}
+//#define HHG_PARSER_3_PARAM(enum_0, type_0, func_0, enum_1, type_1, func_1, enum_2, type_2, fun_2) \
+//if (args[0] == enum_0 && args[1] == enum_1 && args[2] == enum_2) \
+//{ \
+//switch (entry->func->get_ret_type()) \
+//{ \
+//    case trait_type::_VOID_: \
+//    { \
+//        auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get()); \
+//        f->get_function().function_a0(1); \
+//        return exit::OK; \
+//    } \
+//    case trait_type::CHAR: \
+//
+//    break;
+//    case trait_type::STRING:
+//
+//    break;
+//    case trait_type::INT32:
+//
+//    break;
+//    case trait_type::INT64:
+//
+//    break;
+//    case trait_type::FLOAT:
+//
+//    break;
+//    case trait_type::DOUBLE:
+//
+//    break;
+//    default:
+//
+//    return exit::KO;
+//}\
+//}
+
+
 
 
 namespace hhg::parser
@@ -33,72 +63,74 @@ namespace hhg::parser
 inline namespace v1
 {
 
-namespace
-{
-    os::exit pippo(const entry* entry, const cmd_data& data)
+    os::exit pippo(array<trait_type, function_base::MAX_PARAM> params_types,  size_t param_i, cmd_data& data, const entry* entry, error** error)
     {
-        auto args = entry->func->get_args_type();
-        if(args[0] == trait_type::UINT8 )
+        if(1==1)
         {
-            auto f = (const function<void, uint8_t>*)(entry->func.get());
-            f->get_function().function_a0(1);
-            if(entry->func->get_type() == osal::function_base::FUNCTION)
+            auto p0 = parser::handle_param_int(data.tokens[param_i], error);
+            if(error)
             {
-                switch (entry->func->get_ret_type()) //function
-                {
-                    case trait_type::_VOID_:
-                    {
-                        auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get());
-                        f->get_function().function_a0(1);
-                        break;
-                    }
-                    case trait_type::CHAR:
-                    {
-                        break;
-                    }
-                    case trait_type::STRING:
-                    case trait_type::STR:
-                    {
-                        break;
-                    }
-                    case trait_type::BOOL:
-                    case trait_type::INT8:
-                    case trait_type::UINT8:
-                    case trait_type::INT16:
-                    case trait_type::UINT16:
-                    case trait_type::INT32:
-                    case trait_type::UINT32:
-                    {
-                        break;
-                    }
-                    case trait_type::INT64:
-                    case trait_type::UINT64:
-                    {
-                        break;
-                    }
-                    case trait_type::FLOAT:
-                    {
-                        break;
-                    }
-                    case trait_type::DOUBLE:
-                    {
-                        break;
-                    }
-                    default:
-                        return exit::KO;
-                }
+                return exit::KO;
             }
-            else
+            auto p1 = parser::handle_param_int(data.tokens[param_i + 1], error);
+            if(error)
             {
+                return exit::KO;
+            }
+            auto p2 = parser::handle_param_int(data.tokens[param_i + 2], error);
+            if(error)
+            {
+                return exit::KO;
+            }
+            switch (entry->func->get_ret_type())
+            {
+                case trait_type::_VOID_:
+                {
+                    if(entry->func->get_type() == osal::function_base::FUNCTION)
+                    {
+//                        auto f = dynamic_cast<const function<Test, void, int32_t, int32_t, int32_t>*>(entry->func.get());
+//                        f->get_function().function_a0_a1_a2(p0, p1, p2);
+                        return exit::OK;
+                    }
+                    else if(entry->func->get_type() == osal::function_base::METHOD)
+                    {
+                        auto m = dynamic_cast<const method<void, int32_t, int32_t, int32_t>*>(entry->func.get());
 
+                        //m->.function_a0_a1_a2(p0, p1, p2);
+                        return exit::OK;
+                    }
+                    else
+                    {
+                        return exit::KO;
+                    }
+                }
+                case trait_type::CHAR:
+
+                    break;
+                case trait_type::STRING:
+
+                    break;
+                case trait_type::INT32:
+
+                    break;
+                case trait_type::INT64:
+
+                    break;
+                case trait_type::FLOAT:
+
+                    break;
+                case trait_type::DOUBLE:
+
+                    break;
+                default:
+
+                    return exit::KO;
             }
         }
-
 
         return exit::KO;
     }
 
-}
 
 parser::parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT
 : entries_table(entries_table)
@@ -205,17 +237,20 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         return exit::KO;
     }
 
-    if(entry->custom_func)
-    {
-        return entry->custom_func(entry, data, error);
-    }
+
+    array<trait_type, function_base::MAX_PARAM> params_types(trait_type::_VOID_);
+
 
     size_t param_i = 0;
-    for(; param_i < data.tokens_len && param_i < TOKEN_MAX; param_i++)
+    for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
     {
-        if(!data.tokens[param_i].key)
+        if(!data.tokens[i].key)
         {
-            break;
+            if(param_i == 0)
+            {
+                param_i = i;
+            }
+            params_types << data.tokens[i].type;
         }
     }
 
@@ -237,28 +272,18 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
                     {
                         auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get());
                         f->get_function().function_a0(1);
-                    }
-
-
                         break;
+                    }
                     case trait_type::CHAR:
 
                         break;
                     case trait_type::STRING:
-                    case trait_type::STR:
 
                         break;
-                    case trait_type::BOOL:
-                    case trait_type::INT8:
-                    case trait_type::UINT8:
-                    case trait_type::INT16:
-                    case trait_type::UINT16:
                     case trait_type::INT32:
-                    case trait_type::UINT32:
 
                         break;
                     case trait_type::INT64:
-                    case trait_type::UINT64:
 
                         break;
                     case trait_type::FLOAT:
@@ -268,6 +293,7 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
 
                         break;
                     default:
+
                         return exit::KO;
                 }
             }
@@ -397,7 +423,56 @@ os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NO
             }
             if(args_i < args_count)
             {
-                type = entry->func->get_args_type()[args_i];
+
+                switch (entry->func->get_args_type()[args_i]) //function
+                {
+                    case trait_type::_VOID_:
+                    {
+                        type = trait_type::_VOID_;
+                        break;
+                    }
+                    case trait_type::CHAR:
+                    {
+                        type = trait_type::CHAR;
+                        break;
+                    }
+                    case trait_type::STRING:
+                    case trait_type::STR:
+                    {
+                        type = trait_type::STRING;
+                        break;
+                    }
+                    case trait_type::BOOL:
+                    case trait_type::INT8:
+                    case trait_type::UINT8:
+                    case trait_type::INT16:
+                    case trait_type::UINT16:
+                    case trait_type::INT32:
+                    case trait_type::UINT32:
+                    {
+                        type = trait_type::INT32;
+                        break;
+                    }
+                    case trait_type::INT64:
+                    case trait_type::UINT64:
+                    {
+                        type = trait_type::INT64;
+                        break;
+                    }
+                    case trait_type::FLOAT:
+                    {
+                        type = trait_type::FLOAT;
+                        break;
+                    }
+                    case trait_type::DOUBLE:
+                    {
+                        type = trait_type::DOUBLE;
+                        break;
+                    }
+                    default:
+                        type = trait_type::CUSTOM;
+                        break;
+                }
             }
             else
             {
