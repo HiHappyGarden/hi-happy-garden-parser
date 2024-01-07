@@ -272,6 +272,9 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
                     {
                         auto f = dynamic_cast<const function<void, uint8_t>*>(entry->func.get());
                         f->get_function().function_a0(1);
+
+
+
                         break;
                     }
                     case trait_type::CHAR:
