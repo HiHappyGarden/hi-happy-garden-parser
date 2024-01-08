@@ -37,19 +37,19 @@ namespace
     hhg::parser::entry commands_user[] =
     {
 
-         {.key = "1", .func = new hhg::parser::function{set_age, hhg::parser::trait_type::_VOID_, hhg::parser::trait_type::UINT8}, .description = "Set User Age"},
-         {.key = "2", .func = new hhg::parser::function{get_age, hhg::parser::trait_type::UINT8}, .description = "Get User Age"},
-         {.key = "3", .func = new hhg::parser::function{set_name, hhg::parser::trait_type::_VOID_, hhg::parser::trait_type::STR}, .description = "Set User Name"},
-         {.key = "4", .func = new hhg::parser::function{get_name, hhg::parser::trait_type::STR}, .description = "Set User Name"}
+    {.key = "1", .func = new hhg::parser::function{set_age}, .description = "Set User Age"},
+    {.key = "2", .func = new hhg::parser::function{get_age}, .description = "Get User Age"},
+    {.key = "3", .func = new hhg::parser::function{set_name}, .description = "Set User Name"},
+    {.key = "4", .func = new hhg::parser::function{get_name}, .description = "Get User Name"}
     };
     constexpr const size_t commands_user_size = sizeof(commands_user) / sizeof(commands_user[0]);
 
     hhg::parser::entry commands[] =
     {
 
-            {.key = "^VER", .func = new hhg::parser::function{get_version, hhg::parser::trait_type::_VOID_}, .description = "Get App version"},
-            {.key = "^TEST", .func = new hhg::parser::method{&test, &test_t::get_i, hhg::parser::trait_type::UINT32}, .description = "Get App version"},
-            {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
+    {.key = "^VER", .func = new hhg::parser::function{get_version}, .description = "Get App version"},
+    {.key = "^TEST", .func = new hhg::parser::method{&test, &test_t::get_i}, .description = "Get App version"},
+    {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
     };
     constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);
 

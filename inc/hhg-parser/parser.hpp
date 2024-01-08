@@ -51,7 +51,6 @@ inline namespace v1
     constexpr const uint8_t KEY_MAX = 32;
     constexpr const uint8_t TOKEN_MAX = 6;
 
-    struct param;
     struct cmd_data;
     struct entry
     {
@@ -94,7 +93,6 @@ inline namespace v1
         entry* entries_table = nullptr;
         size_t entries_table_size = 0;
 
-        friend os::exit pippo(array<trait_type, function_base::MAX_PARAM> params_types,  size_t param_i, cmd_data& data, const entry* entry, error** error);
     public:
         parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
         parser(const parser&) = delete;
@@ -110,19 +108,15 @@ inline namespace v1
         static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
         static os::exit typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT;
 
-        static char handle_param_char(const token& token, error** error) OS_NOEXCEPT;
-        static char* handle_param_str(const token& token, error** error) OS_NOEXCEPT;
-        static int32_t handle_param_int(const token& token, error** error) OS_NOEXCEPT;
-        static uint64_t handle_param_long(const token& token, error** error) OS_NOEXCEPT;
-        static float handle_param_float(const token& token, error** error) OS_NOEXCEPT;
-        static double handle_param_double(const token& token, error** error) OS_NOEXCEPT;
 
-        static void handle_ret_char(cmd_data& data, char c) OS_NOEXCEPT;
-        static void handle_ret_str(cmd_data& data, const char* str) OS_NOEXCEPT;
-        static void handle_ret_int(cmd_data& data, int32_t i) OS_NOEXCEPT;
-        static void handle_ret_long(cmd_data& data, uint64_t i) OS_NOEXCEPT;
-        static void handle_ret_float(cmd_data& data, float f) OS_NOEXCEPT;
-        static void handle_ret_double(cmd_data& data, double d) OS_NOEXCEPT;
+        static char handle_arg_char(const token& token, error** error) OS_NOEXCEPT;
+        static char* handle_arg_str(const token& token, error** error) OS_NOEXCEPT;
+        static int32_t handle_arg_int(const token& token, error** error) OS_NOEXCEPT;
+        static uint64_t handle_arg_long(const token& token, error** error) OS_NOEXCEPT;
+        static float handle_arg_float(const token& token, error** error) OS_NOEXCEPT;
+        static double handle_arg_double(const token& token, error** error) OS_NOEXCEPT;
+
+        static os::exit handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT;
 
 
     };

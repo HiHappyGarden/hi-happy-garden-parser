@@ -71,11 +71,12 @@ void test_func(uint8_t i)
 
 TEST(foo, test_int)
 {
-    char cmd[] = "^USR 1 12";
+    char cmd[] = "^TEST";
     struct parser parser{get_table_commands(), get_table_size_commands()};
 
-    parser.execute(cmd);
+    char buffer[129];
 
+    parser.execute(cmd, buffer, sizeof(buffer) - 1);
 
 }
 
