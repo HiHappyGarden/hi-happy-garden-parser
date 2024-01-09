@@ -30,9 +30,18 @@
     #define HHG_PARSER_FORMAT_INT "%d"
 #endif
 
+#ifndef HHG_PARSER_FORMAT_UINT
+#define HHG_PARSER_FORMAT_UINT "%u"
+#endif
+
 #ifndef HHG_PARSER_FORMAT_LONG
     #define HHG_PARSER_FORMAT_LONG "%ld"
 #endif
+
+#ifndef HHG_PARSER_FORMAT_ULONG
+#define HHG_PARSER_FORMAT_ULONG "%lu"
+#endif
+
 
 #ifndef HHG_PARSER_FORMAT_FLOAT
     #define HHG_PARSER_FORMAT_FLOAT "%f"
@@ -117,7 +126,6 @@ inline namespace v1
         static double handle_arg_double(const token& token, error** error) OS_NOEXCEPT;
 
         static os::exit handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT;
-
 
     };
 

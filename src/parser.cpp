@@ -22,16 +22,65 @@ using namespace os;
 
 #include <errno.h>
 
-#define OS_HANDLE_ARG_1(idx_0, type_0, func_0) \
-if(tokens[idx_0].type == type_0)\
+#define OS_HANDLE_A0(idx_0, type_0, func_0) \
+if(data.tokens[idx_0].type == type_0)\
 {\
     value ret;\
-    auto a0 = func_0(tokens[idx_0], error);\
+    auto a0 = func_0(data.tokens[idx_0], error);\
     if(error)\
     {\
         return exit::KO;\
     }\
-    if(entry->func->execute(&ret, &a0, nullptr, nullptr) == exit::KO)\
+    if(entry->func->execute(&ret, &a0) == exit::KO)\
+    {\
+        return exit::KO;\
+    }\
+    handle_ret(ret, data);\
+    return exit::OK;\
+}
+
+#define OS_HANDLE_A0_A1(idx_0, type_0, func_0, idx_1, type_1, func_1) \
+if(data.tokens[idx_0].type == type_0 && data.tokens[idx_1].type == type_1)\
+{\
+    value ret;\
+    auto a0 = func_0(data.tokens[idx_0], error);\
+    if(error)\
+    {\
+        return exit::KO;\
+    }\
+    auto a1 = func_1(data.tokens[idx_1], error);\
+    if(error)\
+    {\
+        return exit::KO;\
+    }\
+    if(entry->func->execute(&ret, &a0, &a1) == exit::KO)\
+    {\
+        return exit::KO;\
+    }\
+    handle_ret(ret, data);\
+    return exit::OK;\
+}
+
+#define OS_HANDLE_A0_A1_A2(idx_0, type_0, func_0, idx_1, type_1, func_1, idx_2, type_2, func_2) \
+if(data.tokens[idx_0].type == type_0 && data.tokens[idx_1].type == type_1 && data.tokens[idx_2].type == type_2)\
+{\
+    value ret;\
+    auto a0 = func_0(data.tokens[idx_0], error);\
+    if(error)\
+    {\
+        return exit::KO;\
+    }\
+    auto a1 = func_1(data.tokens[idx_1], error);\
+    if(error)\
+    {\
+        return exit::KO;\
+    }\
+    auto a2 = func_2(data.tokens[idx_2], error);\
+    if(error)\
+    {\
+        return exit::KO;\
+    }\
+    if(entry->func->execute(&ret, &a0, &a1, &a2) == exit::KO)\
     {\
         return exit::KO;\
     }\
@@ -161,15 +210,13 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         }
     }
 
-    token* tokens = data.tokens;
-
     switch (entry->func->get_args_count())
     {
         case 0:
         {
             value ret;
 
-            if(entry->func->execute(&ret, nullptr, nullptr, nullptr) == exit::KO)
+            if(entry->func->execute(&ret) == exit::KO)
             {
                 return exit::KO;
             }
@@ -179,39 +226,531 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         }
         case 1:
         {
-            if(tokens[param_i].type == trait_type::_VOID_)
-            {
-                value ret;
-                if(entry->func->execute(&ret, nullptr, nullptr, nullptr) == exit::KO)
-                {
-                    return exit::KO;
-                }
-                handle_ret(ret, data);
-                return exit::OK;
-            }
-            OS_HANDLE_ARG_1(param_i, trait_type::CHAR, handle_arg_char)
+            OS_HANDLE_A0(param_i, trait_type::CHAR, handle_arg_char)
             else
-            OS_HANDLE_ARG_1(param_i, trait_type::STR, handle_arg_str)
+            OS_HANDLE_A0(param_i, trait_type::STR, handle_arg_str)
             else
-            OS_HANDLE_ARG_1(param_i, trait_type::INT32, handle_arg_int)
+            OS_HANDLE_A0(param_i, trait_type::INT32, handle_arg_int)
             else
-            OS_HANDLE_ARG_1(param_i, trait_type::INT64, handle_arg_long)
+            OS_HANDLE_A0(param_i, trait_type::INT64, handle_arg_long)
             else
-            OS_HANDLE_ARG_1(param_i, trait_type::FLOAT, handle_arg_float)
+            OS_HANDLE_A0(param_i, trait_type::FLOAT, handle_arg_float)
             else
-            OS_HANDLE_ARG_1(param_i, trait_type::DOUBLE, handle_arg_double)
+            OS_HANDLE_A0(param_i, trait_type::DOUBLE, handle_arg_double)
             else
                 return exit::KO;
         }
         case 2:
         {
-
-            break;
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double)
+            else
+                return exit::KO;
         }
         case 3:
         {
-
-            break;
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::STR, handle_arg_str, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT32, handle_arg_int, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::INT64, handle_arg_long, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::FLOAT, handle_arg_float, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::STR, handle_arg_str, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT32, handle_arg_int, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::INT64, handle_arg_long, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::FLOAT, handle_arg_float, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::CHAR, handle_arg_char)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::STR, handle_arg_str)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT32, handle_arg_int)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::INT64, handle_arg_long)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::FLOAT, handle_arg_float)
+            else
+            OS_HANDLE_A0_A1_A2(param_i, trait_type::DOUBLE, handle_arg_double, param_i + 1, trait_type::DOUBLE, handle_arg_double, param_i + 2, trait_type::DOUBLE, handle_arg_double)
+            else
+                return exit::KO;
         }
     }
 
@@ -287,14 +826,18 @@ os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEX
     }
     len = 0;
 
-    for(auto token : data.tokens)
+    for(auto&& token : data.tokens)
     {
         if(token.len && *token.start == '"' && *(token.start + token.len - 1) == '"')
         {
-            //token.start = &token.start[1];
-            token.start++;
-            *(token.start + token.len - 2) = '\0';
-            token.len -= 2;
+            memmove(token.start, token.start + 1, --token.len);
+            *(token.start + --token.len) = '\0';
+            char* ptr = strstr(token.start, "\\" );
+            while(ptr)
+            {
+                memmove(ptr, ptr + 1, --token.len);
+                ptr = strstr(ptr, "\\");
+            }
         }
     }
 
@@ -461,15 +1004,29 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
             strncpy(data.ret_buffer, value.get_str(), data.ret_buffer_len);
             break;
         case trait_type::BOOL:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_bool());
+            break;
         case trait_type::INT8:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int8());
+            break;
         case trait_type::UINT8:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint8());
+            break;
         case trait_type::INT16:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int16());
+            break;
         case trait_type::UINT16:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint16());
+            break;
         case trait_type::INT32:
-        case trait_type::UINT32:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int32());
             break;
+        case trait_type::UINT32:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint32());
+            break;
         case trait_type::INT64:
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int8());
+            break;
         case trait_type::UINT64:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_LONG, value.get_int64());
             break;

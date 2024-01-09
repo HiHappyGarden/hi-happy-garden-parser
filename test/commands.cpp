@@ -24,15 +24,28 @@ namespace
 {
     struct test_t
     {
+        char str[128];
         uint32_t i  = 23;
         uint32_t get_i()
         {
             return i;
         }
+
+        bool set_str(const char* str)
+        {
+            strncpy(test_t::str, str, sizeof(test_t::str) - 1);
+            return true;
+        }
+
+        const char* get_str()
+        {
+            return test_t::str;
+        }
+
     };
 
 
-    test_t test;
+    test_t test_one;
 
     hhg::parser::entry commands_user[] =
     {
@@ -40,7 +53,8 @@ namespace
     {.key = "1", .func = new hhg::parser::function{set_age}, .description = "Set User Age"},
     {.key = "2", .func = new hhg::parser::function{get_age}, .description = "Get User Age"},
     {.key = "3", .func = new hhg::parser::function{set_name}, .description = "Set User Name"},
-    {.key = "4", .func = new hhg::parser::function{get_name}, .description = "Get User Name"}
+    {.key = "4", .func = new hhg::parser::function{get_name}, .description = "Get User Name"},
+    {.key = "5", .func = new hhg::parser::method{&test_one, &test_t::get_str}, .description = "Get string"}
     };
     constexpr const size_t commands_user_size = sizeof(commands_user) / sizeof(commands_user[0]);
 
@@ -48,7 +62,8 @@ namespace
     {
 
     {.key = "^VER", .func = new hhg::parser::function{get_version}, .description = "Get App version"},
-    {.key = "^TEST", .func = new hhg::parser::method{&test, &test_t::get_i}, .description = "Get App version"},
+    {.key = "^TEST", .func = new hhg::parser::method{&test_one, &test_t::get_i}, .description = "Get App version"},
+    {.key = "^TEST_STR", .func = new hhg::parser::method{&test_one, &test_t::set_str}, .description = "Get App version"},
     {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
     };
     constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);
