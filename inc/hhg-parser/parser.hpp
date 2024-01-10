@@ -63,7 +63,7 @@ inline namespace v1
     struct cmd_data;
     struct entry
     {
-        using custom_function = os::exit (*)(const entry* entry, const cmd_data& data, error** error);
+        using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, error** error);
 
         char key[KEY_MAX]{};
 

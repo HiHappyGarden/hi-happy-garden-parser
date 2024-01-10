@@ -64,9 +64,9 @@ namespace
 
     {.key = "^VER", .func = new hhg::parser::function{get_version}, .description = "Get App version"},
     {.key = "^TEST", .func = new hhg::parser::method{&test_one, &test_t::get_i}, .description = "Get App version"},
-    {.key = "^CUST", .custom_func = [](auto entry, auto data, auto error) -> os::exit {
+    {.key = "^CUST", .custom_func = [](auto data, auto entry, auto error) -> os::exit {
 
-    	strncpy(data.ret_buffer, "bye", data.data.ret_buffer);
+    	strncpy(data.ret_buffer, "bye", data.ret_buffer_len);
 
     	return os::exit::OK;
     } , .description = "Custom func"},

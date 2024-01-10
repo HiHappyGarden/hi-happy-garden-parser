@@ -199,7 +199,7 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         return exit::KO;
     }
 
-    if(entry->func == nullptr && entry->custom_func == nullptr)
+    if(entry->func.get() == nullptr && entry->custom_func == nullptr)
     {
         if(error)
         {
@@ -207,6 +207,11 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
             OS_ERROR_PTR_SET_POSITION(*error);
         }
     	return exit::KO;
+    } 
+    
+    if(entry->custom_func)
+    {
+        return entry->custom_func(data, entry, error);
     }
 
     size_t param_i = 0;
@@ -864,6 +869,12 @@ os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NO
         }
         return exit::KO;
     }
+
+    if(entry->func.get() == nullptr && entry->custom_func)
+    {
+        return exit::OK;
+    }
+
 
     uint8_t args_count = entry->func->get_args_count();
     if(args_count)
