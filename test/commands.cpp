@@ -54,7 +54,8 @@ namespace
     {.key = "2", .func = new hhg::parser::function{get_age}, .description = "Get User Age"},
     {.key = "3", .func = new hhg::parser::function{set_name}, .description = "Set User Name"},
     {.key = "4", .func = new hhg::parser::function{get_name}, .description = "Get User Name"},
-    {.key = "5", .func = new hhg::parser::method{&test_one, &test_t::get_str}, .description = "Get string"}
+	{.key = "5", .func = new hhg::parser::method{&test_one, &test_t::set_str}, .description = "Set string"},
+    {.key = "6", .func = new hhg::parser::method{&test_one, &test_t::get_str}, .description = "Get string"}
     };
     constexpr const size_t commands_user_size = sizeof(commands_user) / sizeof(commands_user[0]);
 
@@ -63,7 +64,12 @@ namespace
 
     {.key = "^VER", .func = new hhg::parser::function{get_version}, .description = "Get App version"},
     {.key = "^TEST", .func = new hhg::parser::method{&test_one, &test_t::get_i}, .description = "Get App version"},
-    {.key = "^TEST_STR", .func = new hhg::parser::method{&test_one, &test_t::set_str}, .description = "Get App version"},
+    {.key = "^CUST", .custom_func = [](auto entry, auto data, auto error) -> os::exit {
+
+    	strncpy(data.ret_buffer, "bye", data.data.ret_buffer);
+
+    	return os::exit::OK;
+    } , .description = "Custom func"},
     {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
     };
     constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);

@@ -77,19 +77,38 @@ TEST(foo, test_str)
 
     {
         char buffer[129];
-        char cmd[] = R"(^TEST_STR "[\"Gilbert\", \"2013\", 24, true]")";
+        char cmd[] = R"(^USR 5 "[\"Gilbert\", \"2013\", 24, true]")";
         ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
         ASSERT_TRUE(strncmp(buffer, "1", sizeof(buffer) - 1) == 0);
     }
 
     {
         char buffer[129];
-        char cmd[] = R"(^USR 5)";
+        char cmd[] = R"(^USR 6)";
         ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
         ASSERT_TRUE(strncmp(buffer, R"(["Gilbert", "2013", 24, true]")", sizeof(buffer) - 1) == 0);
     }
-
 }
+
+TEST(foo, test_custom)
+{
+    struct parser parser{get_table_commands(), get_table_size_commands()};
+
+    {
+        char buffer[129];
+        char cmd[] = R"(^USR 5 "[\"Gilbert\", \"2013\", 24, true]")";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+        ASSERT_TRUE(strncmp(buffer, "1", sizeof(buffer) - 1) == 0);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = R"(^USR 6)";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+        ASSERT_TRUE(strncmp(buffer, R"(["Gilbert", "2013", 24, true]")", sizeof(buffer) - 1) == 0);
+    }
+}
+
 
 TEST(foo, fail)
 {

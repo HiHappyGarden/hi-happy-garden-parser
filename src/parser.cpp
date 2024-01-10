@@ -199,6 +199,15 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
         return exit::KO;
     }
 
+    if(entry->func == nullptr && entry->custom_func == nullptr)
+    {
+        if(error)
+        {
+            *error = OS_ERROR_BUILD("entry->func and entry->custom_func are null.", error_type::OS_EINVAL);
+            OS_ERROR_PTR_SET_POSITION(*error);
+        }
+    	return exit::KO;
+    }
 
     size_t param_i = 0;
     for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
