@@ -21,9 +21,19 @@
 #include <osal/osal.hpp>
 #include <stdint.h>
 
+#include "hhg-parser-config.h"
+
 
 #ifndef HHG_PARSER_FORMAT_CHAR
     #define HHG_PARSER_FORMAT_CHAR "%c"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_SHORT
+    #define HHG_PARSER_FORMAT_SHORT "%d"
+#endif
+
+#ifndef HHG_PARSER_FORMAT_USHORT
+	#define HHG_PARSER_FORMAT_USHORT "%u"
 #endif
 
 #ifndef HHG_PARSER_FORMAT_INT
@@ -31,7 +41,7 @@
 #endif
 
 #ifndef HHG_PARSER_FORMAT_UINT
-#define HHG_PARSER_FORMAT_UINT "%u"
+	#define HHG_PARSER_FORMAT_UINT "%u"
 #endif
 
 #ifndef HHG_PARSER_FORMAT_LONG
@@ -39,9 +49,8 @@
 #endif
 
 #ifndef HHG_PARSER_FORMAT_ULONG
-#define HHG_PARSER_FORMAT_ULONG "%lu"
+	#define HHG_PARSER_FORMAT_ULONG "%lu"
 #endif
-
 
 #ifndef HHG_PARSER_FORMAT_FLOAT
     #define HHG_PARSER_FORMAT_FLOAT "%f"
@@ -55,7 +64,6 @@ namespace hhg::parser
 {
 inline namespace v1
 {
-    using namespace os;
 
     constexpr const uint8_t KEY_MAX = 32;
     constexpr const uint8_t TOKEN_MAX = 6;
@@ -63,14 +71,14 @@ inline namespace v1
     struct cmd_data;
     struct entry
     {
-        using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, error** error);
+        using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
 
         char key[KEY_MAX]{};
 
         const entry* next = nullptr;
         uint8_t next_size = 0;
 
-        function_base::ptr func;
+        os::function_base::ptr func;
         custom_function custom_func = nullptr;
 
         char const description[128]{};
@@ -80,7 +88,7 @@ inline namespace v1
     {
         char* start = nullptr;
         size_t len = 0;
-        trait_type type = trait_type::_VOID_;
+        os::trait_type type = os::trait_type::_VOID_;
         bool key = false;
     };
 
@@ -109,23 +117,23 @@ inline namespace v1
         parser(parser&&) = delete;
         parser& operator=(parser&&) = delete;
 
-        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, error** error = nullptr) const OS_NOEXCEPT;
+        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) const OS_NOEXCEPT;
     private:
-        static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT;
-        static os::exit execute(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT;
+        static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
+        static os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
 
-        static os::exit tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT;
-        static os::exit typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT;
+        static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
+        static os::exit typify(const entry* entry, cmd_data& data, os::error** error) OS_NOEXCEPT;
 
 
-        static char handle_arg_char(const token& token, error** error) OS_NOEXCEPT;
-        static char* handle_arg_str(const token& token, error** error) OS_NOEXCEPT;
-        static int32_t handle_arg_int(const token& token, error** error) OS_NOEXCEPT;
-        static uint64_t handle_arg_long(const token& token, error** error) OS_NOEXCEPT;
-        static float handle_arg_float(const token& token, error** error) OS_NOEXCEPT;
-        static double handle_arg_double(const token& token, error** error) OS_NOEXCEPT;
+        static char handle_arg_char(const token& token, os::error** error) OS_NOEXCEPT;
+        static char* handle_arg_str(const token& token, os::error** error) OS_NOEXCEPT;
+        static int32_t handle_arg_int(const token& token, os::error** error) OS_NOEXCEPT;
+        static uint64_t handle_arg_long(const token& token, os::error** error) OS_NOEXCEPT;
+        static float handle_arg_float(const token& token, os::error** error) OS_NOEXCEPT;
+        static double handle_arg_double(const token& token, os::error** error) OS_NOEXCEPT;
 
-        static os::exit handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT;
+        static os::exit handle_ret(const os::value& value, cmd_data& data) OS_NOEXCEPT;
 
     };
 

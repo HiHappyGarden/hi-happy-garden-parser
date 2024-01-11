@@ -1024,19 +1024,19 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
             strncpy(data.ret_buffer, value.get_str(), data.ret_buffer_len);
             break;
         case trait_type::BOOL:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_bool());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_USHORT, value.get_bool());
             break;
         case trait_type::INT8:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int8());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_SHORT, value.get_int8());
             break;
         case trait_type::UINT8:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint8());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_USHORT, value.get_uint8());
             break;
         case trait_type::INT16:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int16());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_SHORT, value.get_int16());
             break;
         case trait_type::UINT16:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint16());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_USHORT, value.get_uint16());
             break;
         case trait_type::INT32:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int32());
@@ -1045,7 +1045,7 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_UINT, value.get_uint32());
             break;
         case trait_type::INT64:
-            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_INT, value.get_int8());
+            snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_ULONG, value.get_uint64());
             break;
         case trait_type::UINT64:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_LONG, value.get_int64());
