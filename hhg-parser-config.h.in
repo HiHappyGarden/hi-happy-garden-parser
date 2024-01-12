@@ -1,0 +1,38 @@
+/***************************************************************************
+ *
+ * Hi Happy Garden
+ * Copyright (C) 2023/2024 Antonio Salsi <passy.linux@zresa.it>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ ***************************************************************************/
+
+
+#ifndef HHG_PARSER_CONFIG_H
+#define HHG_PARSER_CONFIG_H
+
+#define HHG_PARSER_NAME "@PROJECT_NAME@"
+#define HHG_PARSER_VER "@PROJECT_VERSION@"
+#define HHG_PARSER_VER_MAJOR (@PROJECT_VERSION_MAJOR@)
+#define HHG_PARSER_VER_MINOR (@PROJECT_VERSION_MINOR@)
+#define HHG_PARSER_VER_PATCH (@PROJECT_VERSION_PATCH@)
+#define HHG_PARSER_FORMAT_CHAR '@FORMAT_CHAR@'
+#define HHG_PARSER_FORMAT_SHORT "@FORMAT_SHORT@"
+#define HHG_PARSER_FORMAT_INT "@FORMAT_INT@"
+#define HHG_PARSER_FORMAT_LONG "@FORMAT_LONG@"
+#define HHG_PARSER_FORMAT_USHORT "@FORMAT_USHORT@"
+#define HHG_PARSER_FORMAT_UINT "@FORMAT_UINT@"
+#define HHG_PARSER_FORMAT_ULONG "@FORMAT_ULONG@"
+#define HHG_PARSER_ARGS_MAX (@ARGS_MAX@)
+
+#endif // HHG_PARSER_CONFIG_H

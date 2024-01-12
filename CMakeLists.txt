@@ -23,6 +23,17 @@ elseif (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.1)
     message(error "GCC too old")
 endif()
 
+
+set(FORMAT_CHAR %c)
+set(FORMAT_SHORT %d)
+set(FORMAT_INT %d)
+set(FORMAT_LONG %ls)
+set(FORMAT_USHORT %u)
+set(FORMAT_UINT %u)
+set(FORMAT_ULONG %lu)
+set(ARGS_MAX 3)
+configure_file(hhg-parser-config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config/hhg-parser-config.h)
+
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.c")
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_INCLUDES CONFIGURE_DEPENDS "inc/*.hpp" "inc/*.h")
 file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_TEST CONFIGURE_DEPENDS "test/*.cpp" "test/*.hpp")
