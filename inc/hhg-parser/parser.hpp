@@ -60,6 +60,10 @@
     #define HHG_PARSER_FORMAT_DOUBLE "%lf"
 #endif
 
+#ifndef HHG_PARSER_ARGS_MAX
+    #define HHG_PARSER_ARGS_MAX (2)
+#endif
+
 namespace hhg::parser
 {
 inline namespace v1

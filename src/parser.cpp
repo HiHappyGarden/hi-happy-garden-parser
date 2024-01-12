@@ -226,6 +226,7 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
 
     switch (entry->func->get_args_count())
     {
+#if defined(HHG_PARSER_ARGS_MAX) && (HHG_PARSER_ARGS_MAX == 0 || HHG_PARSER_ARGS_MAX == 1 || HHG_PARSER_ARGS_MAX == 2 || HHG_PARSER_ARGS_MAX == 3)
         case 0:
         {
             value ret;
@@ -238,6 +239,8 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
             handle_ret(ret, data);
             return exit::OK;
         }
+#endif
+#if defined(HHG_PARSER_ARGS_MAX) && (HHG_PARSER_ARGS_MAX == 1 || HHG_PARSER_ARGS_MAX == 2 || HHG_PARSER_ARGS_MAX == 3)
         case 1:
         {
             OS_HANDLE_A0(param_i, trait_type::CHAR, handle_arg_char)
@@ -254,6 +257,8 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
             else
                 return exit::KO;
         }
+#endif
+#if defined(HHG_PARSER_ARGS_MAX) &&  (HHG_PARSER_ARGS_MAX == 2 || HHG_PARSER_ARGS_MAX == 3)
         case 2:
         {
             OS_HANDLE_A0_A1(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char)
@@ -330,6 +335,8 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
             else
                 return exit::KO;
         }
+#endif
+#if defined(HHG_PARSER_ARGS_MAX) && HHG_PARSER_ARGS_MAX == 3
         case 3:
         {
             OS_HANDLE_A0_A1_A2(param_i, trait_type::CHAR, handle_arg_char, param_i + 1, trait_type::CHAR, handle_arg_char, param_i + 2, trait_type::CHAR, handle_arg_char)
@@ -766,6 +773,10 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
             else
                 return exit::KO;
         }
+#endif
+#if defined(HHG_PARSER_ARGS_MAX) && (HHG_PARSER_ARGS_MAX < 0 && HHG_PARSER_ARGS_MAX > 3)
+        default: return exit::KO;
+#endif
     }
 
 
