@@ -1067,6 +1067,9 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
         case trait_type::DOUBLE:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_DOUBLE, value.get_double());
             break;
+        case trait_type::_EXIT_:
+            snprintf(data.ret_buffer, data.ret_buffer_len, "%s", value.get_exit() == exit::OK ? "OK" : "KO");
+            break;
         default:
             return exit::KO;
     }
