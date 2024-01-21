@@ -100,6 +100,83 @@ parser::parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT
 
 }
 
+os::exit parser::set(char full_cmd[], function_base::ptr&& func, error** error) OS_NOEXCEPT
+{
+    if(full_cmd == nullptr)
+    {
+        if(error)
+        {
+            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OS_ERROR_PTR_SET_POSITION(*error);
+        }
+        return exit::KO;
+    }
+
+    cmd_data data;
+    if(tokenize(full_cmd, data, error) == exit::KO)
+    {
+        return exit::KO;
+    }
+
+    token* key = data.tokens;
+    for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
+    {
+        key = data.tokens + i;
+        if(!key->key)
+        {
+            break;
+        }
+    }
+
+
+
+	return set(data, entries_table, entries_table_size, func, error);
+}
+
+os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, function_base::ptr& func, error** error) OS_NOEXCEPT
+{
+    if(entries == nullptr || entries_size == 0)
+    {
+        if(error)
+        {
+            *error = OS_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
+            OS_ERROR_PTR_SET_POSITION(*error);
+        }
+        return exit::KO;
+    }
+
+    token* key = data.tokens;
+    for(size_t i = 0; i < data.tokens_len && i < TOKEN_MAX; i++)
+    {
+        key = data.tokens + i;
+        if(!key->key)
+        {
+            break;
+        }
+    }
+
+    for(size_t i = 0; i < entries_size; i++)
+    {
+        entry* cursor = entries + i;
+        if(strncmp(key->start, cursor->key, sizeof(cursor->key)) == 0)
+        {
+            key->key = true;
+            if(cursor->next == nullptr)
+            {
+            	cursor->func.reset(func.get());
+            	return exit::OK;
+            }
+            else
+            {
+                return parser::set(data, const_cast<entry*>(cursor->next), cursor->next_size, func, error);
+            }
+        }
+    }
+
+	return exit::KO;
+}
+
+
 os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) const OS_NOEXCEPT
 {
     if(TOKEN_MAX < 4)
@@ -848,6 +925,10 @@ os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEX
     if(data.tokens_len > 0 )
     {
         data.tokens_len++;
+    }
+    else if(data.tokens_len == 0 && len > 0)
+    {
+    	data.tokens_len = 1;
     }
     len = 0;
 

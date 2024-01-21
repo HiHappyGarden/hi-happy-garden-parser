@@ -69,77 +69,84 @@ namespace hhg::parser
 inline namespace v1
 {
 
-    constexpr const uint8_t KEY_MAX = 32;
-    constexpr const uint8_t TOKEN_MAX = 6;
+constexpr const uint8_t KEY_MAX = 32;
+constexpr const uint8_t TOKEN_MAX = 6;
 
-    struct cmd_data;
-    struct entry
-    {
-        using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
+struct cmd_data;
+struct entry
+{
+	using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
 
-        char key[KEY_MAX]{};
+	char key[KEY_MAX]{};
 
-        const entry* next = nullptr;
-        uint8_t next_size = 0;
+	const entry* next = nullptr;
+	uint8_t next_size = 0;
 
-        os::function_base::ptr func;
-        custom_function custom_func = nullptr;
+	os::function_base::ptr func;
+	custom_function custom_func = nullptr;
 
-        char const description[128]{};
-    };
+	char const description[128]{};
+};
 
-    struct token
-    {
-        char* start = nullptr;
-        size_t len = 0;
-        os::trait_type type = os::trait_type::_VOID_;
-        bool key = false;
-    };
+struct token
+{
+	char* start = nullptr;
+	size_t len = 0;
+	os::trait_type type = os::trait_type::_VOID_;
+	bool key = false;
+};
 
-    struct cmd_data
-    {
-        char* full_cmd = nullptr;
+struct cmd_data
+{
+	char* full_cmd = nullptr;
 
-        token tokens[TOKEN_MAX]{};
-        uint8_t tokens_len = 0;
+	token tokens[TOKEN_MAX]{};
+	uint8_t tokens_len = 0;
 
-        char* ret_buffer = nullptr;
-        size_t ret_buffer_len = 0;
+	char* ret_buffer = nullptr;
+	size_t ret_buffer_len = 0;
 
-        const struct entry* entry = nullptr;
-    };
+	const struct entry* entry = nullptr;
+};
 
-    class parser final
-    {
-        entry* entries_table = nullptr;
-        size_t entries_table_size = 0;
+class parser final
+{
+	entry* entries_table = nullptr;
+	size_t entries_table_size = 0;
 
-    public:
-        parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
-        parser(const parser&) = delete;
-        parser& operator=(const parser&) = delete;
-        parser(parser&&) = delete;
-        parser& operator=(parser&&) = delete;
+public:
+	parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
+	parser(const parser&) = delete;
+	parser& operator=(const parser&) = delete;
+	parser(parser&&) = delete;
+	parser& operator=(parser&&) = delete;
 
-        os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) const OS_NOEXCEPT;
-    private:
-        static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
-        static os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
+	os::exit set(char full_cmd[], os::function_base::ptr&& func, os::error** error = nullptr) OS_NOEXCEPT;
+private:
+	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base::ptr& func, os::error** error) OS_NOEXCEPT;
 
-        static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
-        static os::exit typify(const entry* entry, cmd_data& data, os::error** error) OS_NOEXCEPT;
+public:
+	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) const OS_NOEXCEPT;
 
 
-        static char handle_arg_char(const token& token, os::error** error) OS_NOEXCEPT;
-        static char* handle_arg_str(const token& token, os::error** error) OS_NOEXCEPT;
-        static int32_t handle_arg_int(const token& token, os::error** error) OS_NOEXCEPT;
-        static uint64_t handle_arg_long(const token& token, os::error** error) OS_NOEXCEPT;
-        static float handle_arg_float(const token& token, os::error** error) OS_NOEXCEPT;
-        static double handle_arg_double(const token& token, os::error** error) OS_NOEXCEPT;
+private:
+	static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
+	static os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
 
-        static os::exit handle_ret(const os::value& value, cmd_data& data) OS_NOEXCEPT;
+	static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
+	static os::exit typify(const entry* entry, cmd_data& data, os::error** error) OS_NOEXCEPT;
 
-    };
+
+	static char handle_arg_char(const token& token, os::error** error) OS_NOEXCEPT;
+	static char* handle_arg_str(const token& token, os::error** error) OS_NOEXCEPT;
+	static int32_t handle_arg_int(const token& token, os::error** error) OS_NOEXCEPT;
+	static uint64_t handle_arg_long(const token& token, os::error** error) OS_NOEXCEPT;
+	static float handle_arg_float(const token& token, os::error** error) OS_NOEXCEPT;
+	static double handle_arg_double(const token& token, os::error** error) OS_NOEXCEPT;
+
+	static os::exit handle_ret(const os::value& value, cmd_data& data) OS_NOEXCEPT;
+
+};
 
 }
 }
