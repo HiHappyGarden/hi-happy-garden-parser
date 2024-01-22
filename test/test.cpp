@@ -90,6 +90,32 @@ TEST(foo, test_str)
     }
 }
 
+
+    struct test2_t
+    {
+        char str[128];
+        uint32_t i  = 23;
+        uint32_t get_i()
+        {
+            return i;
+        }
+
+        bool set_str(const char* str)
+        {
+            strncpy(test2_t::str, str, sizeof(test2_t::str) - 1);
+            return true;
+        }
+
+        const char* get_str()
+        {
+            return test2_t::str;
+        }
+
+    };
+
+
+    test2_t test_one;
+
 TEST(foo, test_custom)
 {
     struct parser parser{get_table_commands(), get_table_size_commands()};
@@ -117,6 +143,36 @@ TEST(foo, fail)
         char buffer[129];
         char cmd[] = "^PIPPO";
         ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::KO);
+    }
+
+}
+
+
+TEST(foo, set)
+{
+    struct parser parser{get_table_commands(), get_table_size_commands()};
+
+    {
+        char cmd[] = "^USR 1";
+        ASSERT_EQ(parser.set(cmd, new os::function{set_age}), os::exit::OK);
+    }
+
+    {
+
+        char cmd[] = "^USR 1 23";
+        ASSERT_EQ(parser.execute(cmd), os::exit::OK);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 5 ciao";
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::set_str}), os::exit::KO);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 6 ciao";
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::get_str}), os::exit::KO);
     }
 
 }

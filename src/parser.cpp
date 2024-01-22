@@ -241,7 +241,7 @@ os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_si
     for(size_t i = 0; i < entries_size; i++)
     {
         const entry* cursor = entries + i;
-        if(strncmp(key->start, cursor->key, sizeof(cursor->key)) == 0)
+        if(strncmp(key->start, cursor->key, sizeof(cursor->key)) == 0 && strncmp(key->start, cursor->key, key->len) == 0)
         {
             key->key = true;
             if(cursor->next == nullptr)
