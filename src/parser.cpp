@@ -100,7 +100,7 @@ parser::parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT
 
 }
 
-os::exit parser::set(char full_cmd[], function_base::ptr&& func, error** error) OS_NOEXCEPT
+os::exit parser::set(char full_cmd[], function_base* func, error** error) OS_NOEXCEPT
 {
     if(full_cmd == nullptr)
     {
@@ -133,7 +133,7 @@ os::exit parser::set(char full_cmd[], function_base::ptr&& func, error** error) 
 	return set(data, entries_table, entries_table_size, func, error);
 }
 
-os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, function_base::ptr& func, error** error) OS_NOEXCEPT
+os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, function_base* func, error** error) OS_NOEXCEPT
 {
     if(entries == nullptr || entries_size == 0)
     {
@@ -163,7 +163,7 @@ os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, functi
             key->key = true;
             if(cursor->next == nullptr)
             {
-            	cursor->func.reset(func.get());
+            	cursor->func.reset(func);
             	return exit::OK;
             }
             else

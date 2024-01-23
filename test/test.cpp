@@ -116,6 +116,12 @@ TEST(foo, test_str)
 
     test2_t test_one;
 
+void set_mario(uint8_t age)
+{
+    std::cout << "mario age " << std::to_string(age) ;
+}
+
+
 TEST(foo, test_custom)
 {
     struct parser parser{get_table_commands(), get_table_size_commands()};
@@ -152,10 +158,14 @@ TEST(foo, set)
 {
     struct parser parser{get_table_commands(), get_table_size_commands()};
 
+    auto tab = get_table_commands() + 3;
+    auto key1 = tab->next;
+
     {
         char cmd[] = "^USR 1";
-        ASSERT_EQ(parser.set(cmd, new os::function{set_age}), os::exit::OK);
+        ASSERT_EQ(parser.set(cmd, new os::function{set_mario}), os::exit::OK);
     }
+
 
     {
 
@@ -166,13 +176,13 @@ TEST(foo, set)
     {
         char buffer[129];
         char cmd[] = "^USR 5 ciao";
-        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::set_str}), os::exit::KO);
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::set_str}), os::exit::OK);
     }
 
     {
         char buffer[129];
         char cmd[] = "^USR 6 ciao";
-        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::get_str}), os::exit::KO);
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::get_str}), os::exit::OK);
     }
 
 }

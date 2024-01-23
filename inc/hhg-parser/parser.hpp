@@ -121,9 +121,9 @@ public:
 	parser(parser&&) = delete;
 	parser& operator=(parser&&) = delete;
 
-	os::exit set(char full_cmd[], os::function_base::ptr&& func, os::error** error = nullptr) OS_NOEXCEPT;
+	os::exit set(char full_cmd[], os::function_base* func, os::error** error = nullptr) OS_NOEXCEPT;
 private:
-	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base::ptr& func, os::error** error) OS_NOEXCEPT;
+	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base* func, os::error** error) OS_NOEXCEPT;
 
 public:
 	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) const OS_NOEXCEPT;
