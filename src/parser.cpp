@@ -27,7 +27,7 @@ if(data.tokens[idx_0].type == type_0)\
 {\
     value ret;\
     auto a0 = func_0(data.tokens[idx_0], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
@@ -44,12 +44,12 @@ if(data.tokens[idx_0].type == type_0 && data.tokens[idx_1].type == type_1)\
 {\
     value ret;\
     auto a0 = func_0(data.tokens[idx_0], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
     auto a1 = func_1(data.tokens[idx_1], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
@@ -66,17 +66,17 @@ if(data.tokens[idx_0].type == type_0 && data.tokens[idx_1].type == type_1 && dat
 {\
     value ret;\
     auto a0 = func_0(data.tokens[idx_0], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
     auto a1 = func_1(data.tokens[idx_1], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
     auto a2 = func_2(data.tokens[idx_2], error);\
-    if(error)\
+    if(*error)\
     {\
         return exit::KO;\
     }\
@@ -179,7 +179,7 @@ os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, functi
 
 os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) const OS_NOEXCEPT
 {
-    if(TOKEN_MAX < 4)
+	if constexpr (TOKEN_MAX < 4)
     {
         if(error)
         {
