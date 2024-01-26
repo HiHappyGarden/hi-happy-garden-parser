@@ -18,11 +18,13 @@
  ***************************************************************************/
 
 #pragma once
-#include <osal/osal.hpp>
-#include <stdint.h>
+#include "osal/osal.hpp"
 
+#ifdef INCLUDE_HHG_PARSER_CONFIG
 #include "hhg-parser-config.h"
+#endif
 
+#include <stdint.h>
 
 #ifndef HHG_PARSER_FORMAT_CHAR
     #define HHG_PARSER_FORMAT_CHAR "%c"
