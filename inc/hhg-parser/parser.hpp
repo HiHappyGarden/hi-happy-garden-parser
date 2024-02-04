@@ -117,6 +117,9 @@ class parser final
 	size_t entries_table_size = 0;
 
 public:
+	constexpr static char OK[] = "OK";
+	constexpr static char KO[] = "KO";
+
 	parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
 	parser(const parser&) = delete;
 	parser& operator=(const parser&) = delete;

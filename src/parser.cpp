@@ -1107,6 +1107,7 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
     switch (value.get_type())
     {
         case trait_type::_VOID_:
+        	strncpy(data.ret_buffer, OK, data.ret_buffer_len);
             break;
         case trait_type::CHAR:
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_CHAR, value.get_char());
@@ -1149,7 +1150,7 @@ os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
             snprintf(data.ret_buffer, data.ret_buffer_len, HHG_PARSER_FORMAT_DOUBLE, value.get_double());
             break;
         case trait_type::_EXIT_:
-            snprintf(data.ret_buffer, data.ret_buffer_len, "%s", value.get_exit() == exit::OK ? "OK" : "KO");
+        	strncpy(data.ret_buffer, value.get_exit() == exit::OK ? OK : KO, data.ret_buffer_len);
             break;
         default:
             return exit::KO;
