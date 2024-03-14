@@ -15,7 +15,7 @@ set(CMAKE_C_EXTENSIONS ON)
 add_compile_options("$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-fno-rtti>")
 add_compile_options("$<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-fexceptions>")
 
-add_definitions(-DINCLUDE_HHG_PARSER_CONFIG) 
+#add_definitions(-DINCLUDE_HHG_PARSER_CONFIG)
 
 if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
   set(CMAKE_CXX17_STANDARD_COMPILE_OPTION "-std=c++17")
@@ -55,11 +55,13 @@ FetchContent_MakeAvailable(googletest)
 
 
 include_directories(inc)
-include_directories(osal/inc)
-include_directories(osal/src/unix)
 include_directories(config)
 
-add_subdirectory(osal)
+if (DEFINED PARSER_ENABLE_OSAL)
+    include_directories(osal/inc)
+    include_directories(osal/src/unix)
+    add_subdirectory(osal)
+endif ()
 
 add_library(${PROJECT_NAME} STATIC ${HI_HAPPY_GARDEN_PARSER_SOURCES} ${HI_HAPPY_GARDEN_PARSER_INCLUDES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
