@@ -139,7 +139,7 @@ private:
 	static os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
 
 	static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
-	static os::exit typify(const entry* entry, cmd_data& data, os::error** error) OS_NOEXCEPT;
+	static os::exit typifies(const entry* entry, cmd_data& data, os::error **error) OS_NOEXCEPT;
 
 
 	static char handle_arg_char(const token& token, os::error** error) OS_NOEXCEPT;

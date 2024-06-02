@@ -246,7 +246,7 @@ os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_si
             key->key = true;
             if(cursor->next == nullptr)
             {
-                if(typify(cursor, data, error) == exit::KO)
+                if(typifies(cursor, data, error) == exit::KO)
                 {
                     return exit::KO;
                 }
@@ -950,7 +950,7 @@ os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEX
     return exit::OK;
 }
 
-os::exit parser::typify(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT
+os::exit parser::typifies(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT
 {
     if(entry == nullptr)
     {
