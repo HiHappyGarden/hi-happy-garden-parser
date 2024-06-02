@@ -186,3 +186,39 @@ TEST(foo, set)
     }
 
 }
+
+TEST(foo, set_empty)
+{
+    struct parser parser{get_table_commands(), get_table_size_commands()};
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 5";
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::set_str}), os::exit::OK);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 6";
+        ASSERT_EQ(parser.set(cmd, new os::method{&test_one, &test2_t::get_str}), os::exit::OK);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 5 antonio";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 5 \"\"";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+    }
+
+    {
+        char buffer[129];
+        char cmd[] = "^USR 6";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+        ASSERT_EQ(strcmp(buffer, ""), 0);
+    }
+}
