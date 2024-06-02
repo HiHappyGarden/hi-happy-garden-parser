@@ -5,7 +5,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 
-PROJECT(hi-happy-garden-parser VERSION "0.50.0" LANGUAGES CXX C)
+PROJECT(hi-happy-garden-parser VERSION "1.0.0" LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -43,7 +43,7 @@ file(GLOB_RECURSE HI_HAPPY_GARDEN_PARSER_TEST CONFIGURE_DEPENDS "test/*.cpp" "te
 message(STATUS "PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
 message(STATUS "CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
 
-if (ENABLE_TEST)
+if (PARSER_ENABLE_TEST)
     include(FetchContent)
     message(STATUS "start googletest download")
     FetchContent_Declare(
@@ -68,7 +68,7 @@ endif ()
 add_library(${PROJECT_NAME} STATIC ${HI_HAPPY_GARDEN_PARSER_SOURCES} ${HI_HAPPY_GARDEN_PARSER_INCLUDES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
-if (ENABLE_TEST)
+if (PARSER_ENABLE_TEST)
     add_executable("${PROJECT_NAME}_test" ${HI_HAPPY_GARDEN_PARSER_TEST})
 
     target_link_libraries("${PROJECT_NAME}_test"
