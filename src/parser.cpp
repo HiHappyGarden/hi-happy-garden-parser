@@ -177,7 +177,7 @@ os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, functi
 }
 
 
-os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) const OS_NOEXCEPT
+os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) OS_NOEXCEPT
 {
 	if constexpr (TOKEN_MAX < 4)
     {
@@ -216,6 +216,20 @@ os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_l
     return execute(data, entries_table, entries_table_size, error);
 }
 
+    void parser::set_on_auth(auth::function auth_function) OS_NOEXCEPT
+    {
+        obj  = nullptr;
+        auth_method  = nullptr;
+        parser::auth_function = auth_function;
+    }
+
+    void parser::set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT
+    {
+        auth_function = nullptr;
+        parser::obj  = obj;
+        parser::auth_method  = auth_method;
+    }
+
 os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT
 {
     if(entries == nullptr || entries_size == 0)
@@ -246,6 +260,22 @@ os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_si
             key->key = true;
             if(cursor->next == nullptr)
             {
+
+                if(auth_function)
+                {
+                    if(auth_function(data, cursor,  error)== exit::KO)
+                    {
+                        return exit::KO;
+                    }
+                }
+                else if(obj && auth_method)
+                {
+                    if((obj->*auth_method)(data, cursor,  error) == exit::KO)
+                    {
+                        return exit::KO;
+                    }
+                }
+
                 if(typifies(cursor, data, error) == exit::KO)
                 {
                     return exit::KO;

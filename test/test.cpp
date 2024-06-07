@@ -222,3 +222,40 @@ TEST(foo, set_empty)
         ASSERT_EQ(strcmp(buffer, ""), 0);
     }
 }
+
+
+os::exit auth(const cmd_data& data, const entry* entry, os::error** error)
+{
+    return os::exit::KO;
+}
+
+struct auth final : public hhg::parser::parser::auth
+{
+    ~auth() override = default;
+
+    os::exit  on_auth(const cmd_data &data, const entry *entry, os::error **error) OS_NOEXCEPT override
+    {
+        return os::exit::OK;
+    }
+
+} auth1;
+
+TEST(foo, auth)
+{
+    struct parser parser{get_table_commands(), get_table_size_commands()};
+
+    parser.set_on_auth(auth);
+
+    char buffer[129];
+    char cmd[] = "^PRT_FUNC";
+    ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::KO);
+
+    parser.set_on_auth(&auth1, &hhg::parser::parser::auth::on_auth);
+
+    {
+        char buffer[129];
+        char cmd[] = "^PRT_MTHD";
+        ASSERT_EQ(parser.execute(cmd, buffer, sizeof(buffer) - 1), os::exit::OK);
+    }
+
+}

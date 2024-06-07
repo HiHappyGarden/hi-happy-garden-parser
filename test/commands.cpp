@@ -70,7 +70,9 @@ namespace
 
     	return os::exit::OK;
     } , .description = "Custom func"},
-    {.key = "^USR", .next = commands_user, .next_size = commands_user_size}
+    {.key = "^USR", .next = commands_user, .next_size = commands_user_size},
+    {.key = "^PRT_FUNC", .custom_func = [](auto data, auto entry, auto error) { return os::exit::OK; }, .access = "user"},
+    {.key = "^PRT_MTHD", .custom_func = [](auto data, auto entry, auto error) { return os::exit::OK; }, .access = "user"}
     };
     constexpr const size_t commands_size = sizeof(commands) / sizeof(commands[0]);
 

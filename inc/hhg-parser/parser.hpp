@@ -73,11 +73,15 @@ inline namespace v1
 
 constexpr const uint8_t KEY_MAX = 32;
 constexpr const uint8_t TOKEN_MAX = 6;
+constexpr const uint8_t ACCESS_MAX = 32;
+
 
 struct cmd_data;
 struct entry
 {
+
 	using custom_function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
+
 
 	char key[KEY_MAX]{};
 
@@ -88,6 +92,9 @@ struct entry
 	custom_function custom_func = nullptr;
 
 	char const description[128]{};
+
+    char access[ACCESS_MAX] = {};
+
 };
 
 struct token
@@ -111,11 +118,28 @@ struct cmd_data
 	const struct entry* entry = nullptr;
 };
 
+
+
 class parser final
 {
+public:
+    struct auth
+    {
+        using method = os::exit (auth::*)(const cmd_data& data, const entry* entry, os::error** error);
+        using function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
+
+        virtual ~auth() = default;
+        virtual os::exit on_auth(const cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT = 0;
+    };
+
+private:
 	entry* entries_table = nullptr;
 	size_t entries_table_size = 0;
 
+    auth::function auth_function = nullptr;
+
+    auth* obj  = nullptr;
+    auth::method auth_method  = nullptr;
 public:
 	constexpr static char OK[] = "OK";
 	constexpr static char KO[] = "KO";
@@ -131,12 +155,14 @@ private:
 	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base* func, os::error** error) OS_NOEXCEPT;
 
 public:
-	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) const OS_NOEXCEPT;
+	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) OS_NOEXCEPT;
 
+    void set_on_auth(auth::function auth_function) OS_NOEXCEPT;
+    void set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT;
 
 private:
-	static os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
-	static os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
+	os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
+	os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
 
 	static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
 	static os::exit typifies(const entry* entry, cmd_data& data, os::error **error) OS_NOEXCEPT;
