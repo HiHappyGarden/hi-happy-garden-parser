@@ -22,9 +22,9 @@
 #define HHG_PARSER_CONFIG_H
 
 #define HHG_PARSER_NAME "hi-happy-garden-parser"
-#define HHG_PARSER_VER "1.0.0"
+#define HHG_PARSER_VER "1.1.0"
 #define HHG_PARSER_VER_MAJOR (1)
-#define HHG_PARSER_VER_MINOR (0)
+#define HHG_PARSER_VER_MINOR (1)
 #define HHG_PARSER_VER_PATCH (0)
 #define HHG_PARSER_FORMAT_CHAR '%c'
 #define HHG_PARSER_FORMAT_SHORT "%d"
