@@ -216,19 +216,19 @@ os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_l
     return execute(data, entries_table, entries_table_size, error);
 }
 
-    void parser::set_on_auth(auth::function auth_function) OS_NOEXCEPT
-    {
-        obj  = nullptr;
-        auth_method  = nullptr;
-        parser::auth_function = auth_function;
-    }
+void parser::set_on_auth(auth::function auth_function) OS_NOEXCEPT
+{
+    obj  = nullptr;
+    auth_method  = nullptr;
+    parser::auth_function = auth_function;
+}
 
-    void parser::set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT
-    {
-        auth_function = nullptr;
-        parser::obj  = obj;
-        parser::auth_method  = auth_method;
-    }
+void parser::set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT
+{
+    auth_function = nullptr;
+    parser::obj  = obj;
+    parser::auth_method  = auth_method;
+}
 
 os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT
 {
