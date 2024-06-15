@@ -106,8 +106,8 @@ os::exit parser::set(char full_cmd[], function_base* func, error** error) OSAL_N
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -139,8 +139,8 @@ os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, functi
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -183,8 +183,8 @@ os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_l
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("TOKEN_MAX too small", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("TOKEN_MAX too small", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -193,8 +193,8 @@ os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_l
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -236,8 +236,8 @@ os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_si
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Null entries_table.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -300,8 +300,8 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OSAL
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Null entry.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Null entry.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -310,8 +310,8 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OSAL
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("entry->func and entry->custom_func are null.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("entry->func and entry->custom_func are null.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
     	return exit::KO;
     } 
@@ -897,8 +897,8 @@ os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OSAL_NO
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -986,8 +986,8 @@ os::exit parser::typifies(const entry* entry, cmd_data& data, error** error) OSA
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid argument.", error_type::OS_EINVAL);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
         return exit::KO;
     }
@@ -1075,8 +1075,8 @@ int32_t parser::handle_arg_int(const token& token, error** error) OSAL_NOEXCEPT
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid conversion to int32.", error_type::OS_VALCONV);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid conversion to int32.", error_type::OS_VALCONV);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
     }
     return i;
@@ -1090,8 +1090,8 @@ uint64_t parser::handle_arg_long(const token& token, error** error) OSAL_NOEXCEP
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid conversion to int64.", error_type::OS_VALCONV);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid conversion to int64.", error_type::OS_VALCONV);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
     }
     return l;
@@ -1105,8 +1105,8 @@ float parser::handle_arg_float(const token& token, error** error) OSAL_NOEXCEPT
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid conversion to float.", error_type::OS_VALCONV);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid conversion to float.", error_type::OS_VALCONV);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
     }
     return f;
@@ -1120,8 +1120,8 @@ double parser::handle_arg_double(const token& token, error** error) OSAL_NOEXCEP
     {
         if(error)
         {
-            *error = OS_ERROR_BUILD("Invalid conversion to double.", error_type::OS_VALCONV);
-            OS_ERROR_PTR_SET_POSITION(*error);
+            *error = OSAL_ERROR_BUILD("Invalid conversion to double.", error_type::OS_VALCONV);
+            OSAL_ERROR_PTR_SET_POSITION(*error);
         }
     }
     return d;
