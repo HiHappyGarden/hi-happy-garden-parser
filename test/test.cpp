@@ -233,7 +233,7 @@ struct auth final : public hhg::parser::parser::auth
 {
     ~auth() override = default;
 
-    os::exit  on_auth(const cmd_data &data, const entry *entry, os::error **error) OS_NOEXCEPT override
+    os::exit  on_auth(const cmd_data &data, const entry *entry, os::error **error) OSAL_NOEXCEPT override
     {
         return os::exit::OK;
     }

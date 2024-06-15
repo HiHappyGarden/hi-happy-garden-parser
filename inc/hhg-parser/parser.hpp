@@ -129,7 +129,7 @@ public:
         using function = os::exit (*)(const cmd_data& data, const entry* entry, os::error** error);
 
         virtual ~auth() = default;
-        virtual os::exit on_auth(const cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT = 0;
+        virtual os::exit on_auth(const cmd_data& data, const entry* entry, os::error** error) OSAL_NOEXCEPT = 0;
     };
 
 private:
@@ -144,38 +144,38 @@ public:
 	constexpr static char OK[] = "OK";
 	constexpr static char KO[] = "KO";
 
-	parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT;
+	parser(entry* entries_table, size_t entries_table_size) OSAL_NOEXCEPT;
 	parser(const parser&) = delete;
 	parser& operator=(const parser&) = delete;
 	parser(parser&&) = delete;
 	parser& operator=(parser&&) = delete;
 
-	os::exit set(char full_cmd[], os::function_base* func, os::error** error = nullptr) OS_NOEXCEPT;
+	os::exit set(char full_cmd[], os::function_base* func, os::error** error = nullptr) OSAL_NOEXCEPT;
 private:
-	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base* func, os::error** error) OS_NOEXCEPT;
+	os::exit set(cmd_data& data, entry* entries, size_t entries_size, os::function_base* func, os::error** error) OSAL_NOEXCEPT;
 
 public:
-	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) OS_NOEXCEPT;
+	os::exit execute(char full_cmd[], char ret_value[] = nullptr, uint32_t ret_value_len = 0, os::error** error = nullptr) OSAL_NOEXCEPT;
 
-    void set_on_auth(auth::function auth_function) OS_NOEXCEPT;
-    void set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT;
+    void set_on_auth(auth::function auth_function) OSAL_NOEXCEPT;
+    void set_on_auth(auth* obj, auth::method auth_method) OSAL_NOEXCEPT;
 
 private:
-	os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OS_NOEXCEPT;
-	os::exit execute(cmd_data& data, const entry* entry, os::error** error) OS_NOEXCEPT;
+	os::exit execute(cmd_data& data, const entry* entries, size_t entries_size, os::error** error) OSAL_NOEXCEPT;
+	os::exit execute(cmd_data& data, const entry* entry, os::error** error) OSAL_NOEXCEPT;
 
-	static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OS_NOEXCEPT;
-	static os::exit typifies(const entry* entry, cmd_data& data, os::error **error) OS_NOEXCEPT;
+	static os::exit tokenize(char* full_cmd, cmd_data& data, os::error** error) OSAL_NOEXCEPT;
+	static os::exit typifies(const entry* entry, cmd_data& data, os::error **error) OSAL_NOEXCEPT;
 
 
-	static char handle_arg_char(const token& token, os::error** error) OS_NOEXCEPT;
-	static char* handle_arg_str(const token& token, os::error** error) OS_NOEXCEPT;
-	static int32_t handle_arg_int(const token& token, os::error** error) OS_NOEXCEPT;
-	static uint64_t handle_arg_long(const token& token, os::error** error) OS_NOEXCEPT;
-	static float handle_arg_float(const token& token, os::error** error) OS_NOEXCEPT;
-	static double handle_arg_double(const token& token, os::error** error) OS_NOEXCEPT;
+	static char handle_arg_char(const token& token, os::error** error) OSAL_NOEXCEPT;
+	static char* handle_arg_str(const token& token, os::error** error) OSAL_NOEXCEPT;
+	static int32_t handle_arg_int(const token& token, os::error** error) OSAL_NOEXCEPT;
+	static uint64_t handle_arg_long(const token& token, os::error** error) OSAL_NOEXCEPT;
+	static float handle_arg_float(const token& token, os::error** error) OSAL_NOEXCEPT;
+	static double handle_arg_double(const token& token, os::error** error) OSAL_NOEXCEPT;
 
-	static os::exit handle_ret(const os::value& value, cmd_data& data) OS_NOEXCEPT;
+	static os::exit handle_ret(const os::value& value, cmd_data& data) OSAL_NOEXCEPT;
 
 };
 

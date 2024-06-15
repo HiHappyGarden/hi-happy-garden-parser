@@ -93,14 +93,14 @@ namespace hhg::parser
 inline namespace v1
 {
 
-parser::parser(entry* entries_table, size_t entries_table_size) OS_NOEXCEPT
+parser::parser(entry* entries_table, size_t entries_table_size) OSAL_NOEXCEPT
 : entries_table(entries_table)
 , entries_table_size(entries_table_size)
 {
 
 }
 
-os::exit parser::set(char full_cmd[], function_base* func, error** error) OS_NOEXCEPT
+os::exit parser::set(char full_cmd[], function_base* func, error** error) OSAL_NOEXCEPT
 {
     if(full_cmd == nullptr)
     {
@@ -133,7 +133,7 @@ os::exit parser::set(char full_cmd[], function_base* func, error** error) OS_NOE
 	return set(data, entries_table, entries_table_size, func, error);
 }
 
-os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, function_base* func, error** error) OS_NOEXCEPT
+os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, function_base* func, error** error) OSAL_NOEXCEPT
 {
     if(entries == nullptr || entries_size == 0)
     {
@@ -177,7 +177,7 @@ os::exit parser::set(cmd_data& data, entry* entries, size_t entries_size, functi
 }
 
 
-os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) OS_NOEXCEPT
+os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_len, error** error) OSAL_NOEXCEPT
 {
 	if constexpr (TOKEN_MAX < 4)
     {
@@ -216,21 +216,21 @@ os::exit parser::execute(char full_cmd[], char ret_value[], uint32_t ret_value_l
     return execute(data, entries_table, entries_table_size, error);
 }
 
-void parser::set_on_auth(auth::function auth_function) OS_NOEXCEPT
+void parser::set_on_auth(auth::function auth_function) OSAL_NOEXCEPT
 {
     obj  = nullptr;
     auth_method  = nullptr;
     parser::auth_function = auth_function;
 }
 
-void parser::set_on_auth(auth* obj, auth::method auth_method) OS_NOEXCEPT
+void parser::set_on_auth(auth* obj, auth::method auth_method) OSAL_NOEXCEPT
 {
     auth_function = nullptr;
     parser::obj  = obj;
     parser::auth_method  = auth_method;
 }
 
-os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OS_NOEXCEPT
+os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_size, error** error) OSAL_NOEXCEPT
 {
     if(entries == nullptr || entries_size == 0)
     {
@@ -294,7 +294,7 @@ os::exit parser::execute(cmd_data& data, const entry* entries, size_t entries_si
     return exit::KO;
 }
 
-os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_NOEXCEPT
+os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OSAL_NOEXCEPT
 {
     if(entry == nullptr)
     {
@@ -891,7 +891,7 @@ os::exit parser::execute(cmd_data& data, const entry* entry, error** error) OS_N
     return exit::KO;
 }
 
-os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEXCEPT
+os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OSAL_NOEXCEPT
 {
     if(full_cmd == nullptr)
     {
@@ -980,7 +980,7 @@ os::exit parser::tokenize(char* full_cmd, cmd_data& data, error** error) OS_NOEX
     return exit::OK;
 }
 
-os::exit parser::typifies(const entry* entry, cmd_data& data, error** error) OS_NOEXCEPT
+os::exit parser::typifies(const entry* entry, cmd_data& data, error** error) OSAL_NOEXCEPT
 {
     if(entry == nullptr)
     {
@@ -1057,17 +1057,17 @@ os::exit parser::typifies(const entry* entry, cmd_data& data, error** error) OS_
     return exit::OK;
 }
 
-inline char parser::handle_arg_char(const token& token, error** error) OS_NOEXCEPT
+inline char parser::handle_arg_char(const token& token, error** error) OSAL_NOEXCEPT
 {
     return token.start[0];
 }
 
-inline char* parser::handle_arg_str(const token& token, error** error) OS_NOEXCEPT
+inline char* parser::handle_arg_str(const token& token, error** error) OSAL_NOEXCEPT
 {
     return token.start;
 }
 
-int32_t parser::handle_arg_int(const token& token, error** error) OS_NOEXCEPT
+int32_t parser::handle_arg_int(const token& token, error** error) OSAL_NOEXCEPT
 {
     char* end_ptr = nullptr;
     auto i = static_cast<int32_t>(strtol(token.start, &end_ptr, 10));
@@ -1082,7 +1082,7 @@ int32_t parser::handle_arg_int(const token& token, error** error) OS_NOEXCEPT
     return i;
 }
 
-uint64_t parser::handle_arg_long(const token& token, error** error) OS_NOEXCEPT
+uint64_t parser::handle_arg_long(const token& token, error** error) OSAL_NOEXCEPT
 {
     char* end_ptr = nullptr;
     auto l = static_cast<int64_t>(strtol(token.start, &end_ptr, 10));
@@ -1097,7 +1097,7 @@ uint64_t parser::handle_arg_long(const token& token, error** error) OS_NOEXCEPT
     return l;
 }
 
-float parser::handle_arg_float(const token& token, error** error) OS_NOEXCEPT
+float parser::handle_arg_float(const token& token, error** error) OSAL_NOEXCEPT
 {
     char* end_ptr = nullptr;
     auto f = strtof(token.start, &end_ptr);
@@ -1112,7 +1112,7 @@ float parser::handle_arg_float(const token& token, error** error) OS_NOEXCEPT
     return f;
 }
 
-double parser::handle_arg_double(const token& token, error** error) OS_NOEXCEPT
+double parser::handle_arg_double(const token& token, error** error) OSAL_NOEXCEPT
 {
     char* end_ptr = nullptr;
     auto d = strtod(token.start, &end_ptr);
@@ -1127,7 +1127,7 @@ double parser::handle_arg_double(const token& token, error** error) OS_NOEXCEPT
     return d;
 }
 
-os::exit parser::handle_ret(const value& value, cmd_data& data) OS_NOEXCEPT
+os::exit parser::handle_ret(const value& value, cmd_data& data) OSAL_NOEXCEPT
 {
     if(data.ret_buffer == nullptr && data.ret_buffer_len == 0)
     {
